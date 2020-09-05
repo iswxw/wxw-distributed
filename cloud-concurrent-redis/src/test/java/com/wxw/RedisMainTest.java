@@ -1,6 +1,6 @@
 package com.wxw;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /**
@@ -14,6 +14,6 @@ public class RedisMainTest {
 
     @Test
     public void testDate1(){
-
+        System.out.println("true = " + true);
     }
 }
