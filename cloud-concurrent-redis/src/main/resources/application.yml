@@ -22,3 +22,12 @@ spring:
         min-idle: 0
     # 连接超时时间
     timeout: 2000ms
+# 分布式式锁
+redisson:
+  database: 4
+  address: redis://127.0.0.1:6379
+  password:
+  connectionPoolSize: 8
+  connectionMinimumIdleSize: 3
+  subscriptionConnectionPoolSize: 6
+  subscriptionConnectionMinimumIdleSize: 1
