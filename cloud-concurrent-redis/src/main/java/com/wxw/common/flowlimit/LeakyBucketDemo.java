@@ -1,4 +1,4 @@
-package com.wxw.flowlimit;
+package com.wxw.common.flowlimit;
 
 /**
  * @ Author ：wxw.

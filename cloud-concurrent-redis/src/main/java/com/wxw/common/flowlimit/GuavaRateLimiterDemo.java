@@ -1,4 +1,4 @@
-package com.wxw.flowlimit;
+package com.wxw.common.flowlimit;
 
 import com.google.common.util.concurrent.RateLimiter;
 
