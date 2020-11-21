@@ -35,6 +35,7 @@ public class TokenBucketDemo {
     public static void main(String[] args) {
         for (int i = 0; i < 500; i++) {
             new Thread(new Runnable() {
+                @Override
                 public void run() {
                     if (grant()){
                         System.out.println(" 执行业务逻辑...");
