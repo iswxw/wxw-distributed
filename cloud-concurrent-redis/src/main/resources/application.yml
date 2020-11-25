@@ -1,3 +1,4 @@
+
 spring:
   application:
     name: concurrent-redis
@@ -31,3 +32,5 @@ redisson:
   connectionMinimumIdleSize: 3
   subscriptionConnectionPoolSize: 6
   subscriptionConnectionMinimumIdleSize: 1
+server:
+  port: 8082
