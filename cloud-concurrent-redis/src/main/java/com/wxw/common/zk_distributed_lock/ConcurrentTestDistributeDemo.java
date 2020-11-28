@@ -1,8 +1,8 @@
-package com.wxw.common.distributed_lock;
+package com.wxw.common.zk_distributed_lock;
 
 import com.wxw.service.OrderService;
-import com.wxw.service.impl.OrderServiceImpl;
 import com.wxw.service.impl.OrderServiceImplWithLock;
+import com.wxw.service.impl.OrderServiceImplWithZkDisLock;
 
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CountDownLatch;
@@ -21,8 +21,8 @@ public class ConcurrentTestDistributeDemo {
         CyclicBarrier cb = new CyclicBarrier(currency);   // 循环屏障
         CountDownLatch cdl = new CountDownLatch(currency); // 倒计数锁存器
 
-        OrderService orderService = new OrderServiceImpl();
-//        OrderService orderServiceLock = new OrderServiceImplWithLock();
+//        OrderService orderService = new OrderServiceImpl();  // 单机
+//        OrderService orderServiceLock = new OrderServiceImplWithLock(); // JVM 锁
 
         // 多线程模拟高并发
         for (int i = 0; i < currency; i++) {
@@ -30,8 +30,9 @@ public class ConcurrentTestDistributeDemo {
                 @Override
                 public void run() {
                     //模拟分布式集群场景
-                    OrderService orderServiceLock = new OrderServiceImplWithLock();
-                    System.out.println(Thread.currentThread().getName() + "：我准备好");
+//                    OrderService orderServiceLock = new OrderServiceImplWithLock(); // 模拟集群 jvm锁 并发导致的问题
+                    OrderService orderServiceLock = new OrderServiceImplWithZkDisLock(); // 分布式 锁  惊群效应
+                    System.out.println(Thread.currentThread().getName() + "：我准备好了");
                     // 等待一起出发
                     try {
                         // 方式一

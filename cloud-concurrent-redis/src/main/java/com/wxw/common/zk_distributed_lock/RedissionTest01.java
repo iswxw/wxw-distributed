@@ -1,4 +1,4 @@
-package com.wxw.common.distributed_lock;
+package com.wxw.common.zk_distributed_lock;
 
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;

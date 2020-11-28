@@ -1,4 +1,4 @@
-package com.wxw.common.distributed_lock;
+package com.wxw.common.zk_distributed_lock;
 
 import com.wxw.service.OrderService;
 import com.wxw.service.impl.OrderServiceImpl;
