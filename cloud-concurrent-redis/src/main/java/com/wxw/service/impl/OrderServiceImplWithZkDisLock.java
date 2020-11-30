@@ -23,8 +23,8 @@ public class OrderServiceImplWithZkDisLock implements OrderService {
     public void createOrder() {
         // 获取订单号
         String orderNum = null;
-        Lock lock = new ZKDistributeLock("/BigTree11111");  // 临时节点  有惊群效应
-//        Lock lock = new ZKDistributeImproveLock("/BigTree22222");  // 临时顺序节点
+//        Lock lock = new ZKDistributeLock("/BigTree11111");  // 临时节点  有惊群效应
+        Lock lock = new ZKDistributeImproveLock("/BigTree22222");  // 临时顺序节点
         try {
             lock.lock();
             orderNum = ong.getOrderNum();

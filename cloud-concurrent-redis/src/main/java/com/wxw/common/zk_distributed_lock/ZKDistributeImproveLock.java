@@ -114,7 +114,7 @@ public class ZKDistributeImproveLock implements Lock {
     // 删除节点
     @Override
     public void unlock() {
-        this.client.delete(lockPath);
+        this.client.delete(currentPath);
     }
 
     @Override

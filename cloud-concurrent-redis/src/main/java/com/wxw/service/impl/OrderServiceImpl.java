@@ -2,7 +2,6 @@ package com.wxw.service.impl;
 
 import com.wxw.common.tools.OrderNumGenerator;
 import com.wxw.service.OrderService;
-import org.springframework.stereotype.Service;
 
 /**
  * 订单模块
