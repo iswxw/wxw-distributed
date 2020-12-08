@@ -11,6 +11,8 @@
     <modules>
         <module>cloud-concurrent</module>
         <module>cloud-juc</module>
+        <module>cloud-delayqueue</module>
+        <module>cloud-jvm</module>
     </modules>
 
     <!-- 统一管理jar包版本 -->
