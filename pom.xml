@@ -5,13 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.wxw</groupId>
-    <artifactId>Java-concurrent</artifactId>
+    <artifactId>wxw-concurrent</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
     <modules>
-        <module>cloud-concurrent-redis</module>
-        <module>cloud-jvm-thread</module>
-        <module>cloud-zookeeper</module>
+        <module>cloud-concurrent</module>
+        <module>cloud-juc</module>
     </modules>
 
     <!-- 统一管理jar包版本 -->

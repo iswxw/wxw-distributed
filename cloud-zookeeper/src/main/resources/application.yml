@@ -1,5 +1,0 @@
-
-# zookeeper 配置
-zookeeper:
-  address: 127.0.0.1
-  timeout: 4000
