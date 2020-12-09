@@ -9,16 +9,19 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.wxw.delayqueue</groupId>
-    <artifactId>cloud-delayqueue</artifactId>
+    <groupId>com.wxw.configuration</groupId>
+    <artifactId>cloud-configuration</artifactId>
 
     <!--maven jar 包依赖-->
     <dependencies>
-        <!--引入统一配置-->
         <dependency>
-            <groupId>com.wxw.configuration</groupId>
-            <artifactId>cloud-configuration</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
     </dependencies>
+
 </project>

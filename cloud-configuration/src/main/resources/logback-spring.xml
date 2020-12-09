@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="warn">
+    <springProperty scope="context" name="log.path" source="system.log.path" defaultValue="logs"/>
+    <springProperty scope="context" name="node.name" source="system.node.name" defaultValue="node-1"/>
+
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d [%t] %-5level %logger{36}.%M\(%file:%line\) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <File>${log.path}/${node.name}.log</File>
+        <!--滚动策略，按照时间滚动 TimeBasedRollingPolicy-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!--文件路径,定义了日志的切分方式——把每一天的日志归档到一个文件中,以防止日志填满整个磁盘空间-->
+            <FileNamePattern>${log.path}/${node.name}.%d{yyyy-MM-dd}.%i.log</FileNamePattern>
+            <!-- 单个日志文件最多 100MB -->
+            <maxFileSize>100MB</maxFileSize>
+            <!--只保留最近30天的日志-->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <!--日志输出编码格式化-->
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%d [%t] %-5level %logger{36}.%M\(%file:%line\) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="springfox.documentation" level="WARN" additivity="false"/>
+
+    <root level="INFO">
+        <appender-ref ref="console"/>
+        <appender-ref ref="file"/>
+    </root>
+</Configuration>

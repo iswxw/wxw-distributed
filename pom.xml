@@ -13,6 +13,7 @@
         <module>cloud-juc</module>
         <module>cloud-delayqueue</module>
         <module>cloud-jvm</module>
+        <module>cloud-configuration</module>
     </modules>
 
     <!-- 统一管理jar包版本 -->
