@@ -4,6 +4,14 @@
 # Log file
 *.log
 .idea/
+# 增加过滤文件
+target/
+.mvn/timing.properties
+logs/
+.settings/
+.classpath
+.project
+.checkstyle
 # BlueJ files
 *.ctxt
 

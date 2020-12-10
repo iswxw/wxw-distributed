@@ -20,7 +20,7 @@ public class JobDelayQueueDemo {
     public void process(){
 
         /**
-         * 下单时间，如果当前时间超过当前时间
+         * 下单时间，如果当前时间超过下单时间30分钟未支付 则发送短信提醒将自动取消订单
          */
         String submitOrder = "2020-07-22 13:00:00";
 
