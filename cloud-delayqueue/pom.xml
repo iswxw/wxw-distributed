@@ -14,13 +14,17 @@
 
     <!--maven jar 包依赖-->
     <dependencies>
-        <!--引入统一配置-->
+        <!--引入统一配置 统一工具类-->
         <dependency>
             <groupId>com.wxw.configuration</groupId>
             <artifactId>cloud-configuration</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
-        <!--引入统一工具类-->
+        <!--quartz-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-quartz</artifactId>
+        </dependency>
     </dependencies>
 
     <repositories>
