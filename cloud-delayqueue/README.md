@@ -704,14 +704,30 @@ public void send(String delayTimes) {
 
 ```
 
-
-
-> 源码地址：
+> 源码地址：[GitHub快速访问](https://github.com/GitHubWxw/wxw-concurrent/tree/master/cloud-delayqueue/src/main/java/com/wxw/delay_queue/rabbitmq_delay_quaue) 
 
 ##### （2）优缺点
 
 - **优点:** 高效,可以利用rabbitmq的分布式特性轻易的进行横向扩展,消息支持持久化增加了可靠性。
 - **缺点**：本身的易用度要依赖于rabbitMq的运维.因为要引用rabbitMq,所以复杂度和成本变高
+
+#### 2.7 时间轮（Netty|Kafka|RocketMq）
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -51,7 +51,7 @@ public class RabbitConfiguration {
     @Bean
     public Queue orderTtlQueue() {
         return QueueBuilder
-                .durable(QueueEnum.QUEUE_TTL_ORDER_CANCEL.getName())
+                .durable(QueueEnum.QUEUE_TTL_ORDER_CANCEL.getName())  // 持久队列
                 .withArgument("x-dead-letter-exchange", QueueEnum.QUEUE_ORDER_CANCEL.getExchange())//到期后转发的交换机
                 .withArgument("x-dead-letter-routing-key", QueueEnum.QUEUE_ORDER_CANCEL.getRouteKey())//到期后转发的路由键
                 .build();
