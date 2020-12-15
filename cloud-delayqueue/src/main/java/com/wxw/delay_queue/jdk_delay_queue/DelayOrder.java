@@ -1,4 +1,4 @@
-package com.wxw.common.jdk_delay_queue;
+package com.wxw.delay_queue.jdk_delay_queue;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

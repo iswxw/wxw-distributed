@@ -1,4 +1,4 @@
-package com.wxw.common.redis_zset_delay_quaue.redis_zset_score;
+package com.wxw.delay_queue.redis_zset_delay_quaue.redis_zset_score;
 
 import com.wxw.common.config.JedisClient;
 import com.wxw.common.tools.DateTools;

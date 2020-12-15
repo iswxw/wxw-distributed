@@ -1,4 +1,4 @@
-package com.wxw.common.redis_zset_delay_quaue.redis_expire_callback;
+package com.wxw.delay_queue.redis_zset_delay_quaue.redis_expire_callback;
 
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.listener.KeyExpirationEventMessageListener;

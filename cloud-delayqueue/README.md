@@ -621,7 +621,101 @@ public class RedisKeyExpirationListener extends KeyExpirationEventMessageListene
 
 1. [Redis Zset操作在线文档](https://www.runoob.com/redis/redis-sorted-sets.html) 
 
+##### （3）优缺点
+
+**优点：** 
+
+1. 由于使用Redis作为消息通道，消息都存储在Redis中。如果发送程序或者任务处理程序挂了，重启之后，还有重新处理数据的可能性。
+2. 做集群扩展相当方便
+3. 时间准确度高
+
+**缺点：** 
+
+1. 需要额外进行redis维护
+
 #### 2.6 RabbitMQ 延迟队列
+
+利用 `RabbitMQ` 做延时队列是比较常见的一种方式，而**实际上`RabbitMQ` 自身并没有直接支持提供延迟队列功能**，而是通过 `RabbitMQ` 消息队列的 `TTL`和 `DXL`这两个属性间接实现的。
+
+先来认识一下 `TTL`和 `DXL`两个概念：
+
+- `TTL` 顾名思义：指的是消息的存活时间，`RabbitMQ`可以通过`x-message-tt`参数来设置指定`Queue`（队列）和 `Message`（消息）上消息的存活时间，它的值是一个非负整数，单位为微秒。
+
+  `RabbitMQ` 可以从两种维度设置消息过期时间，分别是`队列`和`消息本身`
+
+  - 设置队列过期时间，那么队列中所有消息都具有相同的过期时间。
+  - 设置消息过期时间，对队列中的某一条消息设置过期时间，每条消息`TTL`都可以不同。
+
+  如果同时设置队列和队列中消息的`TTL`，则`TTL`值以两者中较小的值为准。而队列中的消息存在队列中的时间，一旦超过`TTL`过期时间则成为`Dead Letter`（死信）。
+
+- `Dead Letter Exchanges`（`DLX`）：`DLX`即死信交换机，绑定在死信交换机上的即死信队列。`RabbitMQ`的 `Queue`（队列）可以配置两个参数`x-dead-letter-exchange` 和 `x-dead-letter-routing-key`（可选），一旦队列内出现了`Dead Letter`（死信），则按照这两个参数可以将消息重新路由到另一个`Exchange`（交换机），让消息重新被消费。
+
+  - `x-dead-letter-exchange`：队列中出现`Dead Letter`后将`Dead Letter`重新路由转发到指定 `exchange`（交换机）。
+  - `x-dead-letter-routing-key`：指定`routing-key`发送，一般为要指定转发的队列。
+
+队列出现`Dead Letter`的情况有：
+
+- 消息或者队列的`TTL`过期
+- 队列达到最大长度
+- 消息被消费端拒绝（basic.reject or basic.nack）
+
+> 案例分析
+
+下边结合一张图看看如何实现超30分钟未支付，则关闭该订单的功能
+
+我们在下单成功时，开启一个延迟消息队列`order.delay.queue` ，并设置`x-message-tt`消息存活时间为30分钟，当到达30分钟后订单消息A0001成为了`Dead Letter`（死信），延迟队列检测到有死信，通过配置`x-dead-letter-exchange`，将死信重新转发到能正常消费的关闭订单的消息队列，消费端直接监听关闭订单消息队列后检查数据库支付状态，如果未支付，则关闭该订单。
+
+![在这里插入图片描述](assets/171eec2ff84317ac) 
+
+##### （1）实现
+
+发送消息时指定消息延迟的时间
+
+```java
+public void send(String delayTimes) {
+        amqpTemplate.convertAndSend("order.pay.exchange", 
+                                    "order.pay.queue",
+                                    "大家好我是延迟数据", message -> {
+            // 设置延迟毫秒值
+            message.getMessageProperties().setExpiration(String.valueOf(delayTimes));
+            return message;
+        });
+    }
+}
+
+```
+
+设置延迟队列出现死信后的转发规则
+
+```
+	/**
+     * 延时队列
+     */
+    @Bean(name = "order.delay.queue")
+    public Queue getMessageQueue() {
+        return QueueBuilder
+                .durable(RabbitConstant.DEAD_LETTER_QUEUE)
+                // 配置到期后转发的交换机
+                .withArgument("x-dead-letter-exchange", "order.close.exchange")
+                // 配置到期后转发的路由键
+                .withArgument("x-dead-letter-routing-key", "order.close.queue")
+                .build();
+    }
+
+```
+
+
+
+> 源码地址：
+
+##### （2）优缺点
+
+- **优点:** 高效,可以利用rabbitmq的分布式特性轻易的进行横向扩展,消息支持持久化增加了可靠性。
+- **缺点**：本身的易用度要依赖于rabbitMq的运维.因为要引用rabbitMq,所以复杂度和成本变高
+
+
+
+
 
 
 

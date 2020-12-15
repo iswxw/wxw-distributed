@@ -1,4 +1,4 @@
-package com.wxw.common.job_delay_queue;
+package com.wxw.delay_queue.job_delay_queue;
 
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
