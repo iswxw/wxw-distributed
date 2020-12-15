@@ -1,7 +1,5 @@
 ## 如何实现延时队列
 
-
-
 ### 一、延时队列的应用
 
 #### 1.1 什么是延时队列？
@@ -711,32 +709,207 @@ public void send(String delayTimes) {
 - **优点:** 高效,可以利用rabbitmq的分布式特性轻易的进行横向扩展,消息支持持久化增加了可靠性。
 - **缺点**：本身的易用度要依赖于rabbitMq的运维.因为要引用rabbitMq,所以复杂度和成本变高
 
-#### 2.7 时间轮（Netty|Kafka|RocketMq）
+#### 2.7 时间轮（Netty|Kafka|RocketMQ）
 
+前边几种延时队列的实现方法相对简单，比较容易理解，时间轮算法就稍微有点抽象了。`kafka`、`netty`都有基于时间轮算法实现延时队列，下边主要实践`Netty`的延时队列讲一下时间轮是什么原理。
 
+先来看一张时间轮的原理图，解读一下时间轮的几个基本概念
 
+![在这里插入图片描述](assets/171eec2ff9036dfb) 
 
+- `wheel` ：时间轮，图中的圆盘可以看作是钟表的刻度。比如一圈`round` 长度为`24秒`，刻度数为 `8`，那么每一个刻度表示 `3秒`。那么时间精度就是 `3秒`。时间长度 / 刻度数值越大，精度越大。
 
+当添加一个定时、延时`任务A`，假如会延迟`25秒`后才会执行，可时间轮一圈`round` 的长度才`24秒`，那么此时会根据时间轮长度和刻度得到一个圈数 `round`和对应的指针位置 `index`，也是就`任务A`会绕一圈指向`0格子`上，此时时间轮会记录该任务的`round`和 `index`信息。当round=0，index=0 ，指针指向`0格子`  `任务A`并不会执行，因为 round=0不满足要求。
 
+所以每一个格子代表的是一些时间，比如`1秒`和`25秒` 都会指向0格子上，而任务则放在每个格子对应的链表中，这点和`HashMap`的数据有些类似。
 
+`Netty`构建延时队列主要用`HashedWheelTimer`，`HashedWheelTimer`底层数据结构依然是使用`DelayedQueue`，只是采用时间轮的算法来实现。
 
+下面我们用`Netty` 简单实现延时队列，`HashedWheelTimer`构造函数比较多，解释一下各参数的含义。
 
+- `ThreadFactory` ：表示用于生成工作线程，一般采用线程池；
 
+- `tickDuration`和`unit`：每格的时间间隔，默认100ms；
 
+- `ticksPerWheel`：一圈下来有几格，默认512，而如果传入数值的不是2的N次方，则会调整为大于等于该参数的一个2的N次方数值，有利于优化`hash`值的计算。
 
+```java
+public HashedWheelTimer(ThreadFactory threadFactory, long tickDuration, TimeUnit unit, int ticksPerWheel) {
+        this(threadFactory, tickDuration, unit, ticksPerWheel, true);
+    }
 
+```
 
+- `TimerTask`：一个定时任务的实现接口，其中run方法包装了定时任务的逻辑。
 
+- `Timeout`：一个定时任务提交到`Timer`之后返回的句柄，通过这个句柄外部可以取消这个定时任务，并对定时任务的状态进行一些基本的判断。
 
+- `Timer`：是`HashedWheelTimer`实现的父接口，仅定义了如何提交定时任务和如何停止整个定时机制。
 
+##### （1）实现
 
+```java
+public class NettyDelayQueue {
 
+    public static void main(String[] args) {
 
+        final Timer timer = new HashedWheelTimer(Executors.defaultThreadFactory(), 5, TimeUnit.SECONDS, 2);
 
+        TimerTask task1 = new TimerTask() {
+            public void run(Timeout timeout) throws Exception {
+                System.out.println("order1  5s 后执行 ");
+                timer.newTimeout(this, 5, TimeUnit.SECONDS);//结束时候再次注册
+            }
+        };
 
+        timer.newTimeout(task1, 5, TimeUnit.SECONDS);
+        TimerTask task2 = new TimerTask() {
+            public void run(Timeout timeout) throws Exception {
+                System.out.println("order2  10s 后执行");
+                timer.newTimeout(this, 10, TimeUnit.SECONDS);//结束时候再注册
+            }
+        };
+
+        timer.newTimeout(task2, 10, TimeUnit.SECONDS);
+
+        //该任务仅仅运行一次
+        timer.newTimeout(new TimerTask() {
+            public void run(Timeout timeout) throws Exception {
+                System.out.println("order3  15s 后执行一次");
+            }
+        }, 15, TimeUnit.SECONDS);
+
+    }
+}
+
+```
+
+从执行的结果看，`order3`、`order3`延时任务只执行了一次，而`order2`、`order1`为定时任务，按照不同的周期重复执行。
+
+运行结果：
+
+```scss
+order1  5s 后执行 
+order2  10s 后执行
+order3  15s 后执行一次
+order1  5s 后执行 
+order2  10s 后执行
+```
 
 **相关文章：** 
 
 1. [六种延迟队列实现方式](https://juejin.cn/post/6844904150703013901)  || [源码](https://github.com/chengxy-nds/Springboot-Notebook) 
 2. [延迟任务—队列实现](https://blog.csdn.net/sinat_39336328/article/details/109248534) 
 3. [博客园——延迟队列](https://www.cnblogs.com/2019wxw/p/14100139.html) 
+
+写作一点也不比上班干活轻松，查证资料反复验证demo的可行性，搭建各种`RabbitMQ`、`Redis`环境，只想说我太难了！
+
+### 三、延迟队列总结
+
+目前开源的延迟消息，也就pulsar比较可靠，其次是rocketmq，但rocket只支持18个等级的固定刻度，pulsar也是近几天内的任意时间，长时间不行。其他的，rabbit不适合大量堆积，redis key多的时候会严重滞后（惰性删除），而且没有ack。sorted set，在field超过一定量时预计5000左右会产生性能问题，需要做二次分片。jdk的delayqueue，性能就不提了，只能做短时、量少的延迟消息，而且还没有ack，可能存在丢失，如果要写入数据库，也很麻烦。内存时间轮性能好点，但也没法ack，而且消费阻塞会引起问题（单线程）
+
+目前最佳实践就是组合以上的几种，定时任务+pulsar/rocket本身时间轮等，多重组合，可以实现海量，超长时间的延迟消息
+
+#### 3.1 Apache Pulsar 云原生分布式消息流平台
+
+Apache Pulsar也是基于死信队列实现延迟消息的。Pulsar 作为下一代云原生分布式消息流平台，支持多租户、持久化存储、多机房跨区域数据复制，具有**强一致性、高吞吐**以及低延时的高可扩展流数据存储特性，内置诸多其他系统商业版本才有的特性，是云原生时代解决实时消息流数据传输、存储和计算的最佳解决方案。
+
+![img](assets/110750_Ib3I_3820517.png) 
+
+Apache Pulsar 提供了统一的消费模型，支持 Stream（如 Kafka）和 Queue（如 RabbitMQ）两种消费模型， 支持 exclusive、failover 和 shared 三种消费模式。同时，**Pulsar 提供和 Kafka 兼容的 API，以及 Kafka-On-Pulsar（KoP） 组件来兼容 Kafka 的应用程序**，KoP 在 Pulsar Broker 中解析 Kafka 协议，**用户不用改动客户端的任何 Kafka 代码就能直接使用 Pulsar**。
+
+目前，Apache Pulsar 已经应用部署在国内外众多大型互联网公司和传统行业公司，案例分布在人工智能、金融、电信运营商、直播与短视频、物联网、零售与电子商务、在线教育等多个行业，如美国有线电视网络巨头**Comcast、Yahoo！、腾讯、中国电信、中国移动、BIGO、VIPKID** 等。
+
+- 官网地址：http://pulsar.apache.org/
+
+#### 3.2 有赞延迟队列
+
+##### （1）整体结构
+
+整个延迟队列由4个部分组成：
+
+- Job Pool用来存放所有Job的元信息。
+- Delay Bucket是一组以时间为维度的有序队列，用来存放所有需要延迟的／已经被reserve的Job（这里只存放Job Id）。
+- Timer负责实时扫描各个Bucket，并将delay时间大于等于当前时间的Job放入到对应的Ready Queue。
+- Ready Queue存放处于Ready状态的Job（这里只存放Job Id），以供消费程序消费。
+
+如下图表述：
+
+![Delay Queue](assets/all-1.png) 
+
+##### （2）网络拓扑
+
+![deploy](assets/deploy.png) 
+
+##### （3）生命周期
+
+- 用户对某个商品下单，系统创建订单成功，同时往延迟队列里put一个job。job结构为：{‘topic':'order*close’, ‘id':'order*close*order*NoXXX’, ‘delay’:1800 ,’TTR':60 , ‘body':’XXXXXXX’}
+- 延迟队列收到该job后，先往job pool中存入job信息，然后根据delay计算出绝对执行时间，并以轮询(round-robbin)的方式将job id放入某个bucket。
+- timer每时每刻都在轮询各个bucket，当1800秒（30分钟）过后，检查到上面的job的执行时间到了，取得job id从job pool中获取元信息。如果这时该job处于deleted状态，则pass，继续做轮询；如果job处于非deleted状态，首先再次确认元信息中delay是否大于等于当前时间，如果满足则根据topic将job id放入对应的ready queue，然后从bucket中移除；如果不满足则重新计算delay时间，再次放入bucket，并将之前的job id从bucket中移除。
+- 消费端轮询对应的topic的ready queue（这里仍然要判断该job的合理性），获取job后做自己的业务逻辑。与此同时，服务端将已经被消费端获取的job按照其设定的TTR，重新计算执行时间，并将其放入bucket。
+- 消费端处理完业务后向服务端响应finish，服务端根据job id删除对应的元信息。
+
+#####  （4）缺点和不足
+
+1. timer是通过独立线程的无限循环来实现，在没有ready job的时候会对CPU造成一定的浪费。
+2. 消费端在reserve job的时候，采用的是http短轮询的方式，且每次只能取的一个job。如果ready job较多的时候会加大网络I/O的消耗。
+3. 数据存储使用的redis，消息在持久化上受限于redis的特性。
+4. scale-out的时候依赖第三方（nginx）。
+
+**相关文档** 
+
+1. [有赞延迟队列设计](https://tech.youzan.com/queuing_delay/) 
+
+#### 3.3 分布式任务调度 SchedulerX
+
+分布式任务调度 SchedulerX 2.0 是阿里巴巴基于 Akka 架构自研的新一代分布式任务调度平台。您可以使用 SchedulerX 2.0 编排定时任务、工作流任务、进行分布式任务调度。
+
+- 官方文档：[SchedulerX](https://help.aliyun.com/product/147760.html?spm=5176.b40190741.schedulerxContainer.8.5c68126dnFT1hW) 
+- 阿里分布式任务调度平台（目前公测期免费）地址：[快速访问](https://schedulerx2.console.aliyun.com/cn-hangzhou/InstanceList?namespace=6fe3cd36-4358-47ea-bd6e-48c7c7876f35&source=schedulerx) 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
