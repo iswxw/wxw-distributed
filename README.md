@@ -7,7 +7,7 @@
 ### 项目预览
 
 - [【项目实战】cloud-concurrent](https://github.com/GitHubWxw/wxw-concurrent/tree/master/cloud-concurrent)  ——分布式锁、接口幂等性等问题
-- [【项目实战】cloud-delayqueue](https://github.com/GitHubWxw/wxw-concurrent/tree/master/cloud-delayqueue)  ——延迟队列各种实现方案，包括数据库，JDK自带的DelayQueue，定时任务，MQ，Kafka的时间轮算法等
+- [【项目实战】cloud-delayqueue](https://github.com/GitHubWxw/wxw-concurrent/tree/master/cloud-delayqueue)  ——延迟队列，包括数据库，DelayQueue，定时任务，MQ等实现
 - [【项目实战】cloud-juc](https://github.com/GitHubWxw/wxw-concurrent/tree/master/cloud-juc)  ——主要是并发编程中的实例和常见问题解决方案
 - [【项目实战】cloud-jvm](https://github.com/GitHubWxw/wxw-concurrent/tree/master/cloud-jvm)  ——主要是Java虚拟机相关问题整理
 
