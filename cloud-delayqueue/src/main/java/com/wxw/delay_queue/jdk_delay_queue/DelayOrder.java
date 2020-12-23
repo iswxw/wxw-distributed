@@ -25,6 +25,7 @@ public class DelayOrder implements Delayed {
      */
     String orderNumber = null;
 
+    // 构造函数计算好延迟后的时间
     public DelayOrder(String orderNumber, long time, TimeUnit unit) {
         this.orderNumber = orderNumber;
         this.time = System.currentTimeMillis() + (time > 0 ? unit.toMillis(time) : 0);
