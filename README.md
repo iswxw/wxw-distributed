@@ -1,15 +1,18 @@
 # 核心知识点笔记
 
-尚硅谷周阳老师课程——[互联网大厂高频重点面试题第2季](https://www.bilibili.com/video/av48961087/)笔记。
 
-[JUC笔记](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/docs/JUC.md) / [JVM笔记](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/docs/JVM.md) / [脑图下载](https://github.com/MaJesTySA/JVM-JUC-Core/raw/master/docs/jvm%20juc.xmind) 
 
 
 
 ### 项目预览
 
-- [cloud-concurrent]() 
-- [cloud-delayqueue]() 
-- [cloud-juc]() 
-- [cloud-jvm]() 
+- [【项目实战】cloud-concurrent](https://github.com/GitHubWxw/wxw-concurrent/tree/master/cloud-concurrent)  ——分布式锁、接口幂等性等问题
+- [【项目实战】cloud-delayqueue](https://github.com/GitHubWxw/wxw-concurrent/tree/master/cloud-delayqueue)  ——延迟队列各种实现方案，包括数据库，JDK自带的DelayQueue，定时任务，MQ，Kafka的时间轮算法等
+- [【项目实战】cloud-juc](https://github.com/GitHubWxw/wxw-concurrent/tree/master/cloud-juc)  ——主要是并发编程中的实例和常见问题解决方案
+- [【项目实战】cloud-jvm](https://github.com/GitHubWxw/wxw-concurrent/tree/master/cloud-jvm)  ——主要是Java虚拟机相关问题整理
 
+
+
+### 相关视频教程
+
+- 尚硅谷周阳老师课程——[互联网大厂高频重点面试题第2季](https://www.bilibili.com/video/av48961087/)笔记。—— [JUC笔记](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/docs/JUC.md) / [JVM笔记](https://github.com/MaJesTySA/JVM-JUC-Core/blob/master/docs/JVM.md) / [脑图下载](https://github.com/MaJesTySA/JVM-JUC-Core/raw/master/docs/jvm%20juc.xmind) 
