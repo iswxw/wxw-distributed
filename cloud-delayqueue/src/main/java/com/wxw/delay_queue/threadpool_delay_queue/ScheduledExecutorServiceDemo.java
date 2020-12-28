@@ -1,6 +1,6 @@
 package com.wxw.delay_queue.threadpool_delay_queue;
 
-import com.wxw.common.tools.DateTools;
+import com.wxw.common.manager.tools.DateTools;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;

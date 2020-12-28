@@ -1,6 +1,6 @@
 package com.wxw.delay_queue.job_delay_queue;
 
-import com.wxw.common.tools.DateTools;
+import com.wxw.common.manager.tools.DateTools;
 import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.stereotype.Component;
 

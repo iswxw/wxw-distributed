@@ -1,7 +1,7 @@
 package com.wxw.common.lock.redission;
 
-import com.wxw.common.Result;
-import com.wxw.common.ServiceException;
+import com.wxw.common.manager.Result;
+import com.wxw.common.manager.ServiceException;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;

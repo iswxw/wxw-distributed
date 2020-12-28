@@ -1,4 +1,4 @@
-package com.wxw.common.config;
+package com.wxw.common.manager.config;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;

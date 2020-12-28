@@ -1,7 +1,7 @@
 package com.wxw.delay_queue.redis_zset_delay_quaue.redis_zset_score;
 
-import com.wxw.common.config.JedisClient;
-import com.wxw.common.tools.DateTools;
+import com.wxw.common.manager.config.JedisClient;
+import com.wxw.common.manager.tools.DateTools;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Tuple;
 

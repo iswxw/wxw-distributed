@@ -1,4 +1,4 @@
-package com.wxw.common.config;
+package com.wxw.common.manager.config;
 
 import net.rubyeye.xmemcached.MemcachedClient;
 import net.rubyeye.xmemcached.XMemcachedClient;

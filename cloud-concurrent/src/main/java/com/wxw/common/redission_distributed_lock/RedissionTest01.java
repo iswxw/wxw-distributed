@@ -1,4 +1,4 @@
-package com.wxw.common.zk_distributed_lock;
+package com.wxw.common.redission_distributed_lock;
 
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -19,7 +19,15 @@ public class RedissionTest01 {
     private RedissonClient redissonClient;
 
     public void test_lock(){
+
+        /**
+         * 获取锁
+         */
         RLock lock = redissonClient.getLock("-1");
+
+        /**
+         * 释放锁
+         */
         lock.unlock();
     }
 

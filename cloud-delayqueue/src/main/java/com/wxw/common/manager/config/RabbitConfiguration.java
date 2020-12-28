@@ -1,4 +1,4 @@
-package com.wxw.common.config;
+package com.wxw.common.manager.config;
 
 import com.wxw.common.enums.QueueEnum;
 import org.springframework.amqp.core.*;

@@ -1,4 +1,4 @@
-package com.wxw.common.base;
+package com.wxw.common.manager.base;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

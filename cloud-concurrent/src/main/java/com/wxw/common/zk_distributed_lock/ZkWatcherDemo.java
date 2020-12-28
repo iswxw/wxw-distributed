@@ -1,6 +1,6 @@
 package com.wxw.common.zk_distributed_lock;
 
-import com.wxw.common.tools.MyZkSerializer;
+import com.wxw.common.manager.tools.MyZkSerializer;
 import org.I0Itec.zkclient.IZkDataListener;
 import org.I0Itec.zkclient.ZkClient;
 

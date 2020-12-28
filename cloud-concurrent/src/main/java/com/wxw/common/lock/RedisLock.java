@@ -1,6 +1,6 @@
 package com.wxw.common.lock;
 
-import com.wxw.common.base.BaseLock;
+import com.wxw.common.manager.base.BaseLock;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;

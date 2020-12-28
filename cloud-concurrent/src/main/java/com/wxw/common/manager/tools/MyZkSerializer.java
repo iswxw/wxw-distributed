@@ -1,4 +1,4 @@
-package com.wxw.common.tools;
+package com.wxw.common.manager.tools;
 
 import org.I0Itec.zkclient.exception.ZkMarshallingError;
 import org.I0Itec.zkclient.serialize.ZkSerializer;

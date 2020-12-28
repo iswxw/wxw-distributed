@@ -1,11 +1,10 @@
 package com.wxw.common.zk_distributed_lock;
 
-import com.wxw.common.tools.MyZkSerializer;
+import com.wxw.common.manager.tools.MyZkSerializer;
 import org.I0Itec.zkclient.IZkDataListener;
 import org.I0Itec.zkclient.ZkClient;
 import org.I0Itec.zkclient.exception.ZkNodeExistsException;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
