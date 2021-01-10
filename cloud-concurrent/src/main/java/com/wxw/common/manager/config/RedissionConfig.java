@@ -1,4 +1,4 @@
-package com.wxw.common.config;
+package com.wxw.common.manager.config;
 
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.Redisson;

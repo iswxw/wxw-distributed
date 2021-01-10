@@ -1,4 +1,5 @@
-package com.wxw.common;
+package com.wxw.common.manager;
+
 
 /**
  * @ Author ：wxw.

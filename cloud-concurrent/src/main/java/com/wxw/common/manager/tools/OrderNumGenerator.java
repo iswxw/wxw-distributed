@@ -1,4 +1,4 @@
-package com.wxw.common.tools;
+package com.wxw.common.manager.tools;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

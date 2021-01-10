@@ -1,4 +1,4 @@
-package com.wxw.common.config;
+package com.wxw.common.manager.config;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;

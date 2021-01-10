@@ -1,4 +1,4 @@
-package com.wxw.common.tools;
+package com.wxw.common.manager.tools;
 
 import cn.hutool.core.date.DatePattern;
 import org.apache.commons.lang3.time.DateFormatUtils;
