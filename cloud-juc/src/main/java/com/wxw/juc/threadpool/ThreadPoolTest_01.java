@@ -1,8 +1,6 @@
 package com.wxw.juc.threadpool;
 
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 /**
  * @author: wxw
@@ -10,9 +8,15 @@ import java.util.concurrent.TimeUnit;
  */
 public class ThreadPoolTest_01 {
     public static void main(String[] args) {
-
+        // 构造函数
+        ThreadPoolExecutor executor = buildThreadPoolExecutor();
+        Future<?> submit = executor.submit(() -> {  });
+        executor.execute(()->{});
+        // 工具类
+        ExecutorService executorService = Executors.newFixedThreadPool(5);
+        Future<?> submit1 = executorService.submit(() -> { });
+        executorService.execute(()->{});
     }
-
 
     // 构建一个线程池
     private static ThreadPoolExecutor buildThreadPoolExecutor(){
