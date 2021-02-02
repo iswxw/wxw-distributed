@@ -1,7 +1,11 @@
 package com.wxw.common.manager.tools;
 
+import io.netty.util.internal.ObjectUtil;
+import org.apache.commons.lang3.RandomStringUtils;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * 订单号生成器
@@ -18,5 +22,10 @@ public class OrderNumGenerator {
         final Date now = new Date();
         final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-");
         return sdf.format(now)+ ++i;
+    }
+
+    // 生成随机字符串
+    public static String getUniqueId(){
+        return RandomStringUtils.randomAlphanumeric(10);
     }
 }
