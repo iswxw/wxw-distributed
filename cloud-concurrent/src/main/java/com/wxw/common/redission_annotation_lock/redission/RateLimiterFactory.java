@@ -1,4 +1,4 @@
-package com.wxw.common.lock.redission;
+package com.wxw.common.redission_annotation_lock.redission;
 
 import org.redisson.api.RRateLimiter;
 import org.redisson.api.RateIntervalUnit;

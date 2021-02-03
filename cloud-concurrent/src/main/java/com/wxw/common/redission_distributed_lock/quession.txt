@@ -13,7 +13,9 @@ Redission 文档：(https://github.com/redisson/redisson/wiki)
            其实你可以建造5个完全独立的redis计数器，然后分别创建5个redis连接到这5个redis计数器上，也就是建造5个Redisson实例。
            加锁的时候，用这5个Redisson实例创建5个RLock，然后基于这5个RLock再构造RedissonRedLock就好了。
            这样就不存在你描述一个主机中断停机带来的问题了。
-  相关文章：https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html
+  相关文章：
+    1.https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html
+    2.https://www.cnblogs.com/qg000/p/13403466.html  锁的自动续约
 
 3. 数据丢失故障排查
  1、在redis主从复制架构下，数据采用异步复制导致数据丢失

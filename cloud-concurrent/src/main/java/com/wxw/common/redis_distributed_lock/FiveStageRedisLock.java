@@ -49,7 +49,7 @@ public class FiveStageRedisLock {
      * @param expireTime    redis的key 的过期时间  单位（秒) 防止死锁，导致其他请求无法正常执行业务
      * @return
      */
-    public  boolean lock(String lockKey, String value, long expireTime) {
+    public boolean lock(String lockKey, String value, long expireTime) {
         //对非string类型的序列化
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new StringRedisSerializer());

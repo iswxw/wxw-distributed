@@ -1,4 +1,4 @@
-package com.wxw.common.lock.redission;
+package com.wxw.common.redission_annotation_lock.redission;
 
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.web.bind.annotation.Mapping;
@@ -7,10 +7,10 @@ import java.lang.annotation.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @Mapping // url 映射路径
+ * @Mapping https://segmentfault.com/a/1190000037526833
  * @ Author ：wxw.
  * @ Date ： 11:24 2020/9/28
- * @ Description：自定义锁
+ * @ Description： 分布式锁注解化
  * @ Version:   v_0.0.1
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
@@ -21,10 +21,10 @@ public @interface ApiLock {
 
     /** 锁的资源，key。支持spring El表达式*/
     @AliasFor("key")
-    String value() default "''";
+    String key() default "''";
 
     @AliasFor("value")
-    String key() default "''";
+    String value() default "''";
 
     /** 锁类型*/
     ApiLockType lockType() default ApiLockType.REENTRANT_LOCK;

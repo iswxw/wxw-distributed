@@ -1,6 +1,6 @@
 package com.wxw.controller;
 
-import com.wxw.common.lock.redission.ApiLock;
+import com.wxw.common.redission_annotation_lock.redission.ApiLock;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;

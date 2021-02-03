@@ -1,4 +1,4 @@
-package com.wxw.common.lock.redission;
+package com.wxw.common.redission_annotation_lock.redission;
 
 import com.wxw.common.manager.Result;
 import com.wxw.common.manager.ServiceException;
@@ -56,6 +56,7 @@ public class ApiLockAspect {
             Object[] args = joinPoint.getArgs();
             key = parse(key, method, args);
             key = method.getDeclaringClass().getSimpleName() + "." + method.getName() + "(" + key + ")";
+            // 获取锁的类型
             RLock lock = getLock(key, apiLock);
             long waitTime = apiLock.waitTime();
             long leaseTime = apiLock.leaseTime();
@@ -87,6 +88,13 @@ public class ApiLockAspect {
         }
     }
 
+    /**
+     * 解析方法参数
+     * @param key
+     * @param method
+     * @param args
+     * @return
+     */
     private String parse(String key, Method method, Object[] args) {
         String[] params = discoverer.getParameterNames(method);
         EvaluationContext context = new StandardEvaluationContext();
@@ -96,6 +104,12 @@ public class ApiLockAspect {
         return parser.parseExpression(key).getValue(context, String.class);
     }
 
+    /**
+     * 锁的类型
+     * @param key
+     * @param apiLock
+     * @return
+     */
     private RLock getLock(String key, ApiLock apiLock) {
         switch (apiLock.lockType()) {
             case REENTRANT_LOCK:

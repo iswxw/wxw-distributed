@@ -1,4 +1,4 @@
-package com.wxw.common.lock;
+package com.wxw.common.redission_annotation_lock;
 
 import com.wxw.common.manager.base.BaseLock;
 import org.springframework.stereotype.Component;

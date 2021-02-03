@@ -1,4 +1,4 @@
-package com.wxw.common.lock;
+package com.wxw.common.redission_annotation_lock;
 
 /**
  * @ Author ：wxw.
