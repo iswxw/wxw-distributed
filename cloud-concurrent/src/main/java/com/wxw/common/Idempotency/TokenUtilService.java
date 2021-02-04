@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
  *  2. Token 验证方法： 接收 Token 串参数，加上 Key 前缀形成 Key，再传入 value 值，执行 Lua 表达式
  *    （Lua 表达式能保证命令执行的原子性）进行查找对应 Key 与删除操作。执行完成后验证命令的返回结果，
  *    如果结果不为空且非0，则验证成功，否则失败。
- * @link:
+ * @link: https://xie.infoq.cn/article/f00d4cf4368e0c98d9543b9a3
  * @version: v_0.0.1
  */
 @Slf4j
