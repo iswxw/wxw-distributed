@@ -18,8 +18,7 @@ Redission 文档：(https://github.com/redisson/redisson/wiki)
     2.https://www.cnblogs.com/qg000/p/13403466.html  锁的自动续约
 
 3. 数据丢失故障排查
- 1、在redis主从复制架构下，数据采用异步复制导致数据丢失
-     master在数据还没有被真正提交到slave节点的时候宕机会导致数据丢失
+ 1、在redis主从复制架构下，数据采用异步复制导致数据丢失,master在数据还没有被真正提交到slave节点的时候宕机会导致数据丢失
      主备节点需要同步数据
      数据在主节点缓冲区中准备同步
      master宕机

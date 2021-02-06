@@ -1,6 +1,7 @@
 package com.wxw.common.redis_distributed_lock;
 
 import com.wxw.common.manager.tools.OrderNumGenerator;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
@@ -19,17 +20,19 @@ public class ThreeStageRedisLock {
 
     @Resource
     private RedisTemplate redisTemplate;
+    public static final String uniqueId = OrderNumGenerator.getUniqueId();
 
 
     /**
      * 1. 占分布式锁，去redis占坑
      * 分布式锁加锁
-     * 面临的问题：setnx设置好，并原子性设置过期时间，但是在获取key后准备释放锁之前 突然断电或宕机，锁没有释放，又导致死锁
-     * 解决方案：设置过期时间和占位必须是原子操作。redis支持使用setNxEx命令
+     * 面临的问题：如果发送 Full GC 或者 业务耗时长的情况，导致A线程的锁已经到期并且自动释放，
+     *         那等A线程执行完再释放锁时，可能会释放别的线程的锁，出现加锁错乱的问题
+     * 解决方案：在删除锁之前，根据返回值判断获取到的锁是否是当前锁的Key
      */
     public void lock() {
         String uniqueId = OrderNumGenerator.getUniqueId();
-        //  分布式锁占坑
+        //  分布式锁占坑 同时设置过期时间
         boolean lock = redisTemplate.opsForValue().setIfAbsent("lock", uniqueId,300,TimeUnit.SECONDS);
         if (lock) {
             // TODO: 2021/2/2 加锁成功... 执行业务

@@ -31,11 +31,8 @@ public class TwoStageRedisLock {
         String uniqueId = OrderNumGenerator.getUniqueId();
         boolean lock = redisTemplate.opsForValue().setIfAbsent("lock", uniqueId);
         if (lock) {
-
             // TODO: 2021/2/2 加锁成功... 执行业务
-
-            // 突然断电
-
+            // 突然断电 || 宕机
             // 设置过期时间 30s过期
             redisTemplate.expire("lock", 30, TimeUnit.SECONDS) ;
 
@@ -46,7 +43,6 @@ public class TwoStageRedisLock {
             lock();
         }
     }
-
     /**
      * 释放锁
      */

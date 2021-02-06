@@ -56,7 +56,6 @@ public class FiveStageRedisLock {
         Object result = redisTemplate.execute(lockRedisScript1, Collections.singletonList(lockKey), value, String.valueOf(expireTime));
         return SUCCESS.equals(result);
     }
-
     /**
      * 释放锁——获取value并删除是一个原子操作
      *

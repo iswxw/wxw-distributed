@@ -19,10 +19,11 @@ public class OneStageRedisLock{
     @Resource
     private RedisTemplate redisTemplate;
 
+    public static final String uniqueId = OrderNumGenerator.getUniqueId();
 
     /**
      * 分布式锁加锁
-     * 面临的问题：setnx占好了坑，但是业务代码异常或程序在执行过程中宕机，即没有执行成功删除锁逻辑，导致死锁
+     * 面临的问题：setnx占好了坑，但是业务代码异常或程序在执行过程中宕机，即没有执行成功删除锁逻辑，导致死锁问题
      * 解决方案：设置锁的自动过期，即使没有删除，会自动删除。
      */
     public void lock() {
@@ -40,7 +41,6 @@ public class OneStageRedisLock{
             lock();
         }
     }
-
     /**
      * 释放锁
      */

@@ -64,7 +64,6 @@ public class RedissionRedLockTest {
         boolean res = multiLock.tryLock(100, 10, TimeUnit.SECONDS);
 
 
-
         try {
             /**
              * 加锁
