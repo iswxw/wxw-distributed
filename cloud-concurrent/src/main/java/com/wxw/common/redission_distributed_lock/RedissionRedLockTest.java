@@ -19,6 +19,10 @@ public class RedissionRedLockTest {
 
     /**
      * Redis 通过红锁解决了 主从节点下异步 同步数据导致锁丢失问题
+     *
+     * 前置时间
+     *  - 租约时间（leaseTime): Redis 键key的过期时间；
+     *  - 等待时间（waitTime): 请求获取锁的等待时间；
      * @param args
      */
     public static void main(String[] args) throws InterruptedException {
@@ -50,21 +54,6 @@ public class RedissionRedLockTest {
          */
         RedissonRedLock redLock = new RedissonRedLock(lock1, lock2, lock3);
 
-        /**
-         * ================8.3. 联锁（MultiLock）================
-         */
-        RedissonMultiLock multiLock = new RedissonMultiLock(lock1, lock2, lock3);
-        // 同时加锁：lock1 lock2 lock3
-        // 所有的锁都上锁成功才算成功
-
-        // 给lock1，lock2，lock3加锁，如果没有手动解开的话，10秒钟后将会自动解开
-        multiLock.lock(10, TimeUnit.SECONDS);
-
-        // 为加锁等待100秒时间，并在加锁成功10秒钟后自动解开
-        boolean res = multiLock.tryLock(100, 10, TimeUnit.SECONDS);
-
-
-
         try {
             /**
              * 加锁
@@ -77,5 +66,26 @@ public class RedissionRedLockTest {
              */
             redLock.unlock();
         }
+
+        /**
+         * ================8.3. 联锁（MultiLock）================
+         */
+        RedissonMultiLock multiLock = new RedissonMultiLock(lock1, lock2, lock3);
+        // 同时加锁：lock1 lock2 lock3
+        // 所有的锁都上锁成功才算成功
+
+        // 给lock1，lock2，lock3加锁，如果没有手动解开的话，10秒钟后将会自动解开
+        multiLock.lock(10, TimeUnit.SECONDS);
+
+        /**
+         * 为加锁等待100秒时间，并在加锁成功10秒钟后自动解开
+         *
+         * leaseTime:锁自动释放时间
+         * waitTime:获取锁等待时间
+         */
+        boolean res = multiLock.tryLock(100, 10, TimeUnit.SECONDS);
+
+
+
     }
 }

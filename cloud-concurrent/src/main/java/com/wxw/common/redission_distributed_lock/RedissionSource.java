@@ -12,5 +12,6 @@ import org.redisson.client.handler.ConnectionWatchdog;
 public class RedissionSource {
     public static void main(String[] args) {
 
+        //
     }
 }

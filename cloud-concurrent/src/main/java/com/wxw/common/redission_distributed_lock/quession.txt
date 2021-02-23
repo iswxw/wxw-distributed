@@ -1,10 +1,12 @@
 
 Redission 文档：(https://github.com/redisson/redisson/wiki)
 
-1. redis 分布式锁在master——slave主存复制场景下的缺陷（锁丢失【数据丢失】）
-  redis锁可以比较完美地解决高并发的时候分布式系统的线程安全性的问题，但是这种锁机制也并不是完美的。在主存复制模式下，客户端对master节点加了锁，
+1. redis cluster，或者是redis master-slave架构的主从异步复制导致的redis分布式锁的最大缺陷：
+  - 在redis master实例宕机的时候，可能导致多个客户端同时完成加锁
+  redis锁可以比较完美地解决高并发的时候分布式系统的线程安全性的问题，但是这种锁机制也并不是完美的。在主备切换模式下，客户端对master节点加了锁，
   此时会异步复制给slave节点，此时如果master发生宕机，主备切换，其他salve 选举为主节点，因为之前是异步复制，所以此时正好又有个线程来尝试加锁的时候，
   就会导致多个客户端对同一个分布式锁完成了加锁操作，进而产生脏数据。（https://blog.csdn.net/belongtocode/article/details/102511520）
+  - https://mp.weixin.qq.com/s/y_Uw3P2Ll7wvk_j5Fdlusw
 
 2. 红锁
   解决的问题：主从节点下异步 （传送）同步数据导致锁丢失问题
