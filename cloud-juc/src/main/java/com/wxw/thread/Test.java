@@ -12,7 +12,6 @@ public class Test {
         // 取余数计算
         BinaryStudy();
 
-
     }
 
     private static void BinaryStudy() {

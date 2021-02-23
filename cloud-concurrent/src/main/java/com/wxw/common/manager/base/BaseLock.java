@@ -1,5 +1,7 @@
 package com.wxw.common.manager.base;
 
+import com.wxw.common.manager.config.RedissionConfig;
+import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -16,6 +18,9 @@ public abstract class BaseLock {
 
     @Resource
     protected StringRedisTemplate stringRedis;
+
+    @Resource
+    protected RedissonClient redissonClient;
 
     protected final Logger logger = LoggerFactory.getLogger(getClass());
 }

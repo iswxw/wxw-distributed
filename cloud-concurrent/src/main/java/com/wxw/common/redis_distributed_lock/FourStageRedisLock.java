@@ -19,7 +19,7 @@ public class FourStageRedisLock {
 
     @Resource
     private RedisTemplate redisTemplate;
-
+    public static final String uniqueId = OrderNumGenerator.getUniqueId();
 
     /**
      * 1. 占分布式锁，去redis占坑
@@ -29,7 +29,6 @@ public class FourStageRedisLock {
      * 解决方案：删除锁必须保证原子性。使用redis+Lua脚本。
      */
     public void lock() {
-        String uniqueId = OrderNumGenerator.getUniqueId();
         boolean lock = redisTemplate.opsForValue().setIfAbsent("lock", uniqueId);
         if (lock) {
             // TODO: 2021/2/2 加锁成功... 执行业务
@@ -59,6 +58,9 @@ public class FourStageRedisLock {
      */
     public void unlock(){
         // 业务逻辑执行完后 删除Key 释放锁
-        redisTemplate.delete("lock");
+        Object lock = redisTemplate.opsForValue().get("lock");
+        if (uniqueId.equals(lock)){
+            redisTemplate.delete("lock");
+        }
     }
 }
