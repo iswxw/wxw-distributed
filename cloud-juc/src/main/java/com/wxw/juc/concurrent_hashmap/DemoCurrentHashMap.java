@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 /**
  * @author ：wxw.
  * @date ： 15:57 2021/2/23
- * @description： ConcurrentHashMap真的安全吗？
+ * @description： ConcurrentHashMap真的安全吗？ ConcurrentHashMap是个线程安全的哈希表容器，但它仅保证提供的原子性读写操作线程安全
  * @link: https://xie.infoq.cn/article/de8fddb5ed82d469e2abfc9d4
  * @version: v_0.0.1
  */
@@ -64,7 +64,6 @@ public class DemoCurrentHashMap {
               log.info("gap1 size = {}",gap);
               // 补充元素
               concurrentHashMap.putAll(getData(gap));
-              log.info("process size = {}",concurrentHashMap.size());
           }
         }));
         // 等待所有线程完成
@@ -74,8 +73,6 @@ public class DemoCurrentHashMap {
         // 会是1000吗 ？
         log.info("finish size = {}",concurrentHashMap.size());
     }
-
-
 
 
     // 初始化容器大小
