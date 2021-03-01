@@ -3,7 +3,7 @@
 *.iml
 # Log file
 *.log
-.idea/
+.idea
 # 增加过滤文件
 target/
 .mvn/timing.properties
