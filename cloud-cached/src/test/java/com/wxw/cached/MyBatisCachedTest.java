@@ -21,6 +21,13 @@ public class MyBatisCachedTest extends BaseTest {
 
     @Resource
     private EnginesService enginesService;
+    
+
+    @Test
+    public void test_2(){
+
+    }
+
 
     @Test
     public void test_1(){

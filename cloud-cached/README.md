@@ -53,9 +53,18 @@ MyBatis 内置了一个强大的事务性查询缓存机制，它可以非常方
 提示：
 
 1.  缓存只作用于 cache 标签所在的映射文件中的语句。如果你混合使用 Java API 和 XML 映射文件，在共用接口中的语句将不会被默认缓存。你需要使用 @CacheNamespaceRef 注解指定缓存作用域。
-2. 二级缓存是事务性的。这意味着，当 SqlSession 完成并提交或是完成并回滚时，但没有执行 flushCache=true 的 insert/delete/update 语句时，缓存会获得更新。
+2. 二级缓存是事务性的。这意味着，当 SqlSession 完成并提交或是完成并回滚但没有执行 flushCache=true 的 insert/delete/update 语句时，缓存会获得更新。
+
+2.2 测试准备
 
 
+
+相关文章
+
+1. [Mybatis深入源码分析之基于装饰模式纯手写一级，二级，三级缓存](https://cloud.tencent.com/developer/article/1457941) 
+2. [Mybatis深入源码分析之SQLSession一级缓存原理分析](https://my.oschina.net/u/3995125/blog/3079788) 
+3. [Mybatis深入源码分析之SqlSessionFactory二级缓存原理分析](https://my.oschina.net/u/3995125/blog/3079857) 
+4. [两种方式（xml+代码）构建SqlSessionFactory+完整实现](https://www.cnblogs.com/weibanggang/p/10117596.html) 
 
 ### 3. Spring 与 Session 缓存
 
