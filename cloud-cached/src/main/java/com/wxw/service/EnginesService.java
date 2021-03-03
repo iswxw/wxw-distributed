@@ -18,4 +18,13 @@ public interface EnginesService {
      * @return
      */
     List<Engines> queryEngineList();
+
+    /**
+     * 根据引擎名称获取数据
+     * @param engine
+     * @return
+     */
+    Engines selectByEngine(String engine);
+
+
 }

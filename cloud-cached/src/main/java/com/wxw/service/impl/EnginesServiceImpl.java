@@ -27,4 +27,9 @@ public class EnginesServiceImpl implements EnginesService {
         EnginesExample example = new EnginesExample();
         return enginesMapper.selectByExample(example);
     }
+
+    @Override
+    public Engines selectByEngine(String engine) {
+        return enginesMapper.selectByEngine(engine);
+    }
 }

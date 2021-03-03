@@ -23,4 +23,6 @@ public interface EnginesMapper {
     int updateByExampleSelective(@Param("record") Engines record, @Param("example") EnginesExample example);
 
     int updateByExample(@Param("record") Engines record, @Param("example") EnginesExample example);
+
+    Engines selectByEngine(String engine);
 }

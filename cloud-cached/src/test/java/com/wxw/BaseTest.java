@@ -1,11 +1,14 @@
 package com.wxw;
 
-import lombok.extern.slf4j.Slf4j;
+import com.alibaba.druid.pool.DruidDataSource;
+import com.wxw.manager.conf.MyBatisDataBaseConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import javax.annotation.Resource;
 
 /**
  * @author ：wxw.
@@ -20,13 +23,18 @@ public class BaseTest {
 
     protected long timeDistance = 0;
 
+    @Resource
+    private DruidDataSource druidDataSource;
+
     @Before
-    public void test_before(){
+    public void before() throws Exception {
+        MyBatisDataBaseConfig myBatisDataBaseConfig = new MyBatisDataBaseConfig();
+        myBatisDataBaseConfig.primarySqlSessionFactory(druidDataSource);
         timeDistance = System.currentTimeMillis();
     }
 
     @After
-    public void test_after(){
+    public void after(){
         System.err.printf("执行总耗时：%s \n",( System.currentTimeMillis() - timeDistance) + "ms");
     }
 }

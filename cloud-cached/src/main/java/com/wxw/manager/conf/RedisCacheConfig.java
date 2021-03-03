@@ -12,6 +12,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
+import com.wxw.manager.function.Mybatis2RedisCached;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
@@ -21,22 +22,17 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.cache.RedisCacheWriter;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-
-import javax.annotation.Resource;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author ：wxw.
@@ -45,7 +41,7 @@ import java.util.Map;
  * @link:
  * @version: v_0.0.1
  */
-@EnableCaching
+@EnableCaching // 开启缓存
 @Configuration
 public class RedisCacheConfig {
 
@@ -58,21 +54,37 @@ public class RedisCacheConfig {
     /** redis数据库自定义key */
     public static final String     REDIS_KEY_DATABASE = "wxw";
 
-    @Resource
-    private RedisConnectionFactory redisConnectionFactory;
-
+    // redis 缓存
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<Object, Object> redisTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
         RedisSerializer<Object> serializer = redisSerializer();
         // 模板序列化
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        RedisTemplate<Object, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(lettuceConnectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(serializer);
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashValueSerializer(serializer);
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
+    }
+
+    // mybatis 缓存
+    @Bean
+    public RedisTemplate<Object, Object> mybatisRedisTemplate(LettuceConnectionFactory lettuceConnectionFactory)  {
+        RedisTemplate<Object, Object> mybatisRedisTemplate = new RedisTemplate<>();
+        mybatisRedisTemplate.setConnectionFactory(lettuceConnectionFactory);
+        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
+        mybatisRedisTemplate.setKeySerializer(stringRedisSerializer);
+        mybatisRedisTemplate.setHashKeySerializer(stringRedisSerializer);
+        GenericFastJsonRedisSerializer fastJsonRedisSerializer = new GenericFastJsonRedisSerializer();
+        mybatisRedisTemplate.setValueSerializer(fastJsonRedisSerializer);
+        mybatisRedisTemplate.setHashValueSerializer(fastJsonRedisSerializer);
+        mybatisRedisTemplate.setDefaultSerializer(fastJsonRedisSerializer);
+        mybatisRedisTemplate.afterPropertiesSet();
+        // mybatis 自定义二级缓存 到redis
+        Mybatis2RedisCached.setRedisTemplate(mybatisRedisTemplate);
+        return mybatisRedisTemplate;
     }
 
     // redis 序列化处理
@@ -102,15 +114,17 @@ public class RedisCacheConfig {
         return serializer;
     }
 
-    // 缓存序列化
+    // 缓存序列化管理
     @Bean
-    public RedisCacheManager redisCacheManager(RedisConnectionFactory redisConnectionFactory) {
-        RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory);
-        //设置Redis缓存有效期为1天
-        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration
-                .defaultCacheConfig()
-                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(redisSerializer()))
-                .entryTtl(Duration.ofDays(1));
+    public RedisCacheManager redisCacheManager(LettuceConnectionFactory lettuceConnectionFactory) {
+        RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(lettuceConnectionFactory);
+        StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
+        GenericFastJsonRedisSerializer fastJsonRedisSerializer = new GenericFastJsonRedisSerializer();
+        //设置Redis缓存有效期为30天
+        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+                .entryTtl(Duration.ofDays(1))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(stringRedisSerializer))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(fastJsonRedisSerializer));
         return new RedisCacheManager(redisCacheWriter, redisCacheConfiguration);
     }
 
