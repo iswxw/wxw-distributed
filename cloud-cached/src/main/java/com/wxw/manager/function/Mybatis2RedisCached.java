@@ -1,10 +1,10 @@
 package com.wxw.manager.function;
 
+import com.wxw.manager.tools.ToolsApplicationContext;
 import org.apache.ibatis.cache.Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -26,14 +26,13 @@ public class Mybatis2RedisCached implements Cache {
     public static void setRedisTemplate(RedisTemplate<Object, Object> redisTemplate) {
         Mybatis2RedisCached.redisTemplate = redisTemplate;
     }
-
     private String keyId;
 
     public Mybatis2RedisCached(final String keyId) {
         if (keyId == null) {
             throw new IllegalArgumentException("Cache instances require an ID");
         }
-        logger.info("Redis Cache keyId " + keyId);
+        logger.info("[mybatis-Redis-Cache] keyId ==> {}",keyId);
         this.keyId = keyId;
     }
 
@@ -45,6 +44,7 @@ public class Mybatis2RedisCached implements Cache {
     @Override
     public void putObject(Object key, Object value) {
         if (value != null) {
+            logger.debug("[存入缓存] key = {},value = {}",key.toString(),value);
             redisTemplate.opsForHash().put(this.keyId, key.toString(), value);
         }
     }
@@ -52,7 +52,9 @@ public class Mybatis2RedisCached implements Cache {
     @Override
     public Object getObject(Object key) {
         if (key != null) {
-            return redisTemplate.opsForHash().get(this.keyId, key.toString());
+            Object value = redisTemplate.opsForHash().get(this.keyId, key.toString());
+            logger.debug("[获取缓存] key = {}, value = {}",key.toString(),value);
+            return value;
         }
         return null;
     }
@@ -60,7 +62,9 @@ public class Mybatis2RedisCached implements Cache {
     @Override
     public Object removeObject(Object key) {
         if (key != null) {
-            return redisTemplate.opsForHash().delete(this.keyId, key.toString());
+            Long delete = redisTemplate.opsForHash().delete(this.keyId, key.toString());
+            logger.debug("[删除缓存] key = {}, value = {}",key.toString(),delete);
+            return delete;
         }
         return null;
     }
@@ -68,11 +72,13 @@ public class Mybatis2RedisCached implements Cache {
     @Override
     public void clear() {
         redisTemplate.delete(this.keyId);
+        logger.debug("清空缓存 keyId ==> {}",getId());
     }
 
     @Override
     public int getSize() {
-        return redisTemplate.opsForHash().size(this.keyId).intValue();
+        Long size = redisTemplate.opsForHash().size(this.keyId);
+        return size == null ? 0 : size.intValue();
     }
 
     @Override

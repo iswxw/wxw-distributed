@@ -42,9 +42,7 @@ public class RedisCachedServiceImpl implements RedisCachedService {
     @Cacheable(value = RedisCacheConfig.REDIS_KEY_DATABASE, key = "'redis:person:'+#id", unless = "#result==null")
     @Override
     public Person getPerson(Integer id) {
-        Address address = new Address(1L,"甘肃省","北京市","房山区","甘肃省 北京市 房山区");
-        Person person = new Person(1L, "刘备", 18, new Date(), LocalDate.now(), address);
-//        Person person = new Person(1L, "刘备", 18, new Date(), address);
+        Person person = new Person(1, "诸葛亮", new Date(),"北京",new Date());
         return person;
     }
 
@@ -68,9 +66,7 @@ public class RedisCachedServiceImpl implements RedisCachedService {
     @CachePut(value = RedisCacheConfig.REDIS_KEY_DATABASE, key = "'redis:person:'+#id")
     @Override
     public Person putPerson(Integer id) {
-        Address address = new Address(1L,"北京","北京市","房山区","甘肃省 北京市 房山区");
-        Person person = new Person(1L, "诸葛亮", 18, new Date(), LocalDate.now(), address);
-//        Person person = new Person(1L, "刘备", 18, new Date(), address);
+        Person person = new Person(1, "诸葛亮", new Date(),"北京",new Date());
         return person;
     }
 
@@ -89,8 +85,7 @@ public class RedisCachedServiceImpl implements RedisCachedService {
             @CacheEvict(value = RedisCacheConfig.REDIS_KEY_DATABASE,key = "'redis:person:'+#id"), // 清除缓存
     })
     public Person conditionPerson(Integer id) {
-        Address address = new Address(1L,"北京","北京市","房山区","甘肃省 北京市 房山区");
-        Person person = new Person(1L, "诸葛亮", 18, new Date(), LocalDate.now(), address);
+        Person person = new Person(1, "诸葛亮", new Date(),"北京",new Date());
         return person;
     }
 }

@@ -85,6 +85,13 @@ MyBatis 内置了一个强大的事务性查询缓存机制，它可以非常方
 
 3. mybatis 的缓存是基于 [namespace:sql语句:参数] 来进行缓存的，意思就是， SqlSession 的 HashMap 存储缓存数据时，是使用 [namespace:sql:参数] 作为 key ，查询返回的语句作为 value 保存的
 
+4. Spring与MyBatis整合时，MyBatis的一级缓存在没有事务存在的时候失效。
+
+   ```
+   在未开启事务的情况之下，每次查询，spring都会关闭旧的sqlSession而创建新的sqlSession,因此此时的一级缓存是没有启作用的;
+   在开启事务的情况之下，spring使用threadLocal获取当前资源绑定同一个sqlSession，因此此时一级缓存是有效的。
+   ```
+
 - **二级缓存** 
 
 二级缓存是` mapper` 级别的缓存，也就是同一个 namespace 的 mapper.xml ，当多个 SqlSession 使用同一个 Mapper 操作数据库的时候，得到的数据会缓存在同一个二级缓存区域
@@ -112,20 +119,47 @@ MyBatis 内置了一个强大的事务性查询缓存机制，它可以非常方
 若想禁用当前`select`语句的二级缓存，添加 `useCache="false"`修改如下：
 
 ```xml
-<select id="getCountByName" parameterType="java.util.Map" resultType="INTEGER" statementType="CALLABLE" useCache="false">
+<select id="getCountByName" 
+        parameterType="java.util.Map" 
+        resultType="INTEGER" 
+        statementType="CALLABLE"         
+        useCache="false" // 为false时，禁用二级缓存，在下一查询时会刷新后从数据库重新查询数据
+ >
 ```
 
 具体流程：
 
-1. 当一个` sqlseesion `执行了一次` select` 后，在关闭此` session` 的时候，会将查询结果缓存到二级缓存
-
-2. 当另一个` sqlsession `执行` select` 时，首先会在他自己的一级缓存中找，如果没找到，就回去二级缓存中找，找到了就返回，就不用去数据库了，从而减少了数据库压力提高了性能
+1. 当一个` sqlseesion `执行了一次` select` 后，在关闭此` session` 的时候，会将查询结果缓存到二级缓存（比如redis中）
+2. 当另一个` sqlsession `执行` select` 时，首先会在他自己的一级缓存中找，如果没找到，就回去二级缓存中找，找到了就返回，就不用去数据库了，从而减少了数据库压力，提高了并发性能
 
 注意:
 
-1. 如果 `SqlSession` 执行了 DML 操作`（insert、update、delete）`，并 `commit` 了，那么 `mybatis` 就会清空当前` mapper` 缓存中的所有缓存数据，这样可以保证缓存中的存的数据永远和数据库中一致，避免出现差异
-
+1. 如果 `SqlSession` 执行了 DML 操作`（insert、update、delete）`，并 `commit` 了，那么 `mybatis` 就会清空当前` mapper` 缓存中的所有缓存数据，这样可以保证缓存中存的数据永远和数据库中一致，避免出现差异
 2. ` mybatis` 的缓存是基于` [namespace:sql语句:参数] `来进行缓存的，意思就是，`SqlSession` 的 `HashMap` 存储缓存数据时，是使用 `[namespace:sql:参数] `作为 `key` ，查询返回的语句作为 `value` 保存的。
+
+- **useCache和flushCache** 
+
+mybatis中还可以配置userCache和flushCache等配置项，userCache是用来设置是否禁用二级缓存的，在statement中设置useCache=false可以禁用当前select语句的二级缓存，即每次查询都会发出sql去查询，默认情况是true，即该sql使用二级缓存。
+
+```
+<select id="selectUserByUserId" useCache="false" resultType="com.ys.twocache.User" parameterType="int">    
+        select * from user where id=#{id}
+</select>
+```
+
+这种情况是针对每次查询都需要最新的数据sql，要设置成useCache=false，禁用二级缓存，直接从数据库中获取。
+
+在mapper的同一个namespace中，如果有其它insert、update、delete操作数据后需要刷新缓存，如果不执行刷新缓存会出现脏读。
+
+设置statement配置中的flushCache=”true” 属性，默认情况下为true，即刷新缓存，如果改成false则不会刷新。使用缓存时如果手动修改数据库表中的查询数据会出现脏读。
+
+```
+<select id="selectUserByUserId" flushCache="true" useCache="false" resultType="com.ys.twocache.User"    parameterType="int">    
+     select * from user where id=#{id} 
+</select>
+```
+
+一般下执行完commit操作都需要刷新缓存，flushCache=true表示刷新缓存，这样可以避免数据库脏读。所以我们不用设置，默认即可。
 
 #### 2.3 二级缓存实现源码
 

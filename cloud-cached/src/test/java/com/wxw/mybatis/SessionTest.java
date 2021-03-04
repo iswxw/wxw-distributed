@@ -1,9 +1,7 @@
 package com.wxw.mybatis;
 
 import com.wxw.BaseTest;
-import com.wxw.dao.EnginesMapper;
-import com.wxw.domain.Engines;
-import com.wxw.domain.EnginesExample;
+import com.wxw.dao.PersonMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
@@ -12,6 +10,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.junit.Test;
 
 import java.io.Reader;
+import java.util.Optional;
 
 /**
  * @author ：wxw.
@@ -22,7 +21,14 @@ import java.io.Reader;
  */
 @Slf4j
 public class SessionTest extends BaseTest {
-    
+
+
+    @Test
+    public void test_2(){
+        System.out.println(Optional.ofNullable(null));
+        // log.info("ssss = {}",null);
+    }
+
     @Test
     public void test_1(){
         try {
@@ -36,9 +42,7 @@ public class SessionTest extends BaseTest {
             // 4.获取Session
             SqlSession sqlSession = sqlSessionFactory.openSession();
             // 5.操作Mapper接口
-            EnginesMapper enginesMapper = sqlSession.getMapper(EnginesMapper.class);
-            long count = enginesMapper.countByExample(new EnginesExample());
-            System.out.println(count);
+            PersonMapper personMapper = sqlSession.getMapper(PersonMapper.class);
         } catch (Exception e) {
             e.printStackTrace();
         }

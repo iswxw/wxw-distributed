@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wxw.dao.EnginesMapper">
-  <resultMap id="BaseResultMap" type="com.wxw.domain.Engines">
-    <result column="ENGINE" jdbcType="VARCHAR" property="engine" />
-    <result column="SUPPORT" jdbcType="VARCHAR" property="support" />
-    <result column="COMMENT" jdbcType="VARCHAR" property="comment" />
-    <result column="TRANSACTIONS" jdbcType="VARCHAR" property="transactions" />
-    <result column="XA" jdbcType="VARCHAR" property="xa" />
-    <result column="SAVEPOINTS" jdbcType="VARCHAR" property="savepoints" />
+<mapper namespace="com.wxw.dao.PersonMapper">
+
+  <!-- 开启基于redis的二级缓存 -->
+  <cache type="com.wxw.manager.function.Mybatis2RedisCached" eviction="LRU"/>
+
+  <resultMap id="BaseResultMap" type="com.wxw.domain.Person">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="birthday" jdbcType="TIMESTAMP" property="birthday" />
+    <result column="address" jdbcType="VARCHAR" property="address" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -68,15 +71,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    ENGINE, SUPPORT, COMMENT, TRANSACTIONS, XA, SAVEPOINTS
+    id, name, birthday, address, update_time
   </sql>
-  <select id="selectByExample" parameterType="com.wxw.domain.EnginesExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.wxw.domain.PersonExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from ENGINES
+    from person
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -84,89 +87,72 @@
       order by ${orderByClause}
     </if>
   </select>
-  <delete id="deleteByExample" parameterType="com.wxw.domain.EnginesExample">
-    delete from ENGINES
+  <delete id="deleteByExample" parameterType="com.wxw.domain.PersonExample">
+    delete from person
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.wxw.domain.Engines">
-    insert into ENGINES (ENGINE, SUPPORT, COMMENT, 
-      TRANSACTIONS, XA, SAVEPOINTS
-      )
-    values (#{engine,jdbcType=VARCHAR}, #{support,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}, 
-      #{transactions,jdbcType=VARCHAR}, #{xa,jdbcType=VARCHAR}, #{savepoints,jdbcType=VARCHAR}
-      )
+  <insert id="insert" parameterType="com.wxw.domain.Person">
+    insert into person (id, name, birthday, 
+      address, update_time)
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{birthday,jdbcType=TIMESTAMP}, 
+      #{address,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.wxw.domain.Engines">
-    insert into ENGINES
+  <insert id="insertSelective" parameterType="com.wxw.domain.Person">
+    insert into person
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="engine != null">
-        ENGINE,
+      <if test="id != null">
+        id,
       </if>
-      <if test="support != null">
-        SUPPORT,
+      <if test="name != null">
+        name,
       </if>
-      <if test="comment != null">
-        COMMENT,
+      <if test="birthday != null">
+        birthday,
       </if>
-      <if test="transactions != null">
-        TRANSACTIONS,
+      <if test="address != null">
+        address,
       </if>
-      <if test="xa != null">
-        XA,
-      </if>
-      <if test="savepoints != null">
-        SAVEPOINTS,
+      <if test="updateTime != null">
+        update_time,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="engine != null">
-        #{engine,jdbcType=VARCHAR},
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
       </if>
-      <if test="support != null">
-        #{support,jdbcType=VARCHAR},
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
       </if>
-      <if test="comment != null">
-        #{comment,jdbcType=VARCHAR},
+      <if test="birthday != null">
+        #{birthday,jdbcType=TIMESTAMP},
       </if>
-      <if test="transactions != null">
-        #{transactions,jdbcType=VARCHAR},
+      <if test="address != null">
+        #{address,jdbcType=VARCHAR},
       </if>
-      <if test="xa != null">
-        #{xa,jdbcType=VARCHAR},
-      </if>
-      <if test="savepoints != null">
-        #{savepoints,jdbcType=VARCHAR},
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.wxw.domain.EnginesExample" resultType="java.lang.Long">
-    select count(*) from ENGINES
-    <if test="_parameter != null">
-      <include refid="Example_Where_Clause" />
-    </if>
-  </select>
-    <update id="updateByExampleSelective" parameterType="map">
-    update ENGINES
+  <update id="updateByExampleSelective" parameterType="map">
+    update person
     <set>
-      <if test="record.engine != null">
-        ENGINE = #{record.engine,jdbcType=VARCHAR},
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.support != null">
-        SUPPORT = #{record.support,jdbcType=VARCHAR},
+      <if test="record.name != null">
+        name = #{record.name,jdbcType=VARCHAR},
       </if>
-      <if test="record.comment != null">
-        COMMENT = #{record.comment,jdbcType=VARCHAR},
+      <if test="record.birthday != null">
+        birthday = #{record.birthday,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.transactions != null">
-        TRANSACTIONS = #{record.transactions,jdbcType=VARCHAR},
+      <if test="record.address != null">
+        address = #{record.address,jdbcType=VARCHAR},
       </if>
-      <if test="record.xa != null">
-        XA = #{record.xa,jdbcType=VARCHAR},
-      </if>
-      <if test="record.savepoints != null">
-        SAVEPOINTS = #{record.savepoints,jdbcType=VARCHAR},
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null">
@@ -174,22 +160,17 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update ENGINES
-    set ENGINE = #{record.engine,jdbcType=VARCHAR},
-      SUPPORT = #{record.support,jdbcType=VARCHAR},
-      COMMENT = #{record.comment,jdbcType=VARCHAR},
-      TRANSACTIONS = #{record.transactions,jdbcType=VARCHAR},
-      XA = #{record.xa,jdbcType=VARCHAR},
-      SAVEPOINTS = #{record.savepoints,jdbcType=VARCHAR}
+    update person
+    set id = #{record.id,jdbcType=INTEGER},
+      name = #{record.name,jdbcType=VARCHAR},
+      birthday = #{record.birthday,jdbcType=TIMESTAMP},
+      address = #{record.address,jdbcType=VARCHAR},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-
-  <select id="selectByEngine" resultType="com.wxw.domain.Engines">
-    select
-    <if test="distinct"> distinct </if>
-    <include refid="Base_Column_List" /> from ENGINES where
-    <if test="engine != null"> ENGINE = #{engine} </if>
+  <select id="selectById" resultType="com.wxw.domain.Person">
+    select <include refid="Base_Column_List"/> from person where id = #{personId}
   </select>
 </mapper>

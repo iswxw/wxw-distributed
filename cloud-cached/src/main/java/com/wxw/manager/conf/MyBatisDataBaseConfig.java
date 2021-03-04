@@ -1,19 +1,14 @@
 package com.wxw.manager.conf;
 
-import com.alibaba.druid.pool.DruidDataSource;
+import com.wxw.manager.function.Mybatis2RedisCached;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-
-import javax.annotation.Resource;
 import javax.sql.DataSource;
-import java.sql.SQLException;
 
 /**
  * @author ：wxw.
@@ -37,6 +32,7 @@ public class MyBatisDataBaseConfig {
 
     @Value("${mybatis.configuration.cache-enabled:false}")
     private boolean cacheEnabled;
+
     @Value("${mybatis.configuration.log-impl:}")
     private Class<? extends Log> logImpl;
 
@@ -47,6 +43,10 @@ public class MyBatisDataBaseConfig {
         sessionFactory.setDataSource(primaryDataSource);
         sessionFactory.setMapperLocations(
                 new PathMatchingResourcePatternResolver().getResources(MyBatisDataBaseConfig.MAPPER_LOCATION));
+        org.apache.ibatis.session.Configuration configuration = new org.apache.ibatis.session.Configuration();
+        configuration.setLogPrefix("[wxw]");
+        configuration.setCacheEnabled(cacheEnabled);
+//        configuration.setLogImpl(logImpl);
         return sessionFactory.getObject();
     }
 }

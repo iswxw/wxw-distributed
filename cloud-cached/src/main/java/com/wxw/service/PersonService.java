@@ -1,6 +1,7 @@
 package com.wxw.service;
 
-import com.wxw.domain.Engines;
+
+import com.wxw.domain.Person;
 
 import java.util.List;
 
@@ -11,20 +12,19 @@ import java.util.List;
  * @link:
  * @version: v_0.0.1
  */
-public interface EnginesService {
+public interface PersonService {
 
     /**
      * 查询引擎集合
      * @return
      */
-    List<Engines> queryEngineList();
+    List<Person> queryPersonList();
 
     /**
-     * 根据引擎名称获取数据
-     * @param engine
+     * 根据personId获取数据
+     * @param personId
      * @return
      */
-    Engines selectByEngine(String engine);
-
+    Person selectById(Integer personId);
 
 }
