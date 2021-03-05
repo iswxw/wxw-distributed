@@ -132,7 +132,7 @@ MyBatis 内置了一个强大的事务性查询缓存机制，它可以非常方
 1. 当一个` sqlseesion `执行了一次` select` 后，在关闭此` session` 的时候，会将查询结果缓存到二级缓存（比如redis中）
 2. 当另一个` sqlsession `执行` select` 时，首先会在他自己的一级缓存中找，如果没找到，就回去二级缓存中找，找到了就返回，就不用去数据库了，从而减少了数据库压力，提高了并发性能
 
-注意:
+**注意:** 
 
 1. 如果 `SqlSession` 执行了 DML 操作`（insert、update、delete）`，并 `commit` 了，那么 `mybatis` 就会清空当前` mapper` 缓存中的所有缓存数据，这样可以保证缓存中存的数据永远和数据库中一致，避免出现差异
 2. ` mybatis` 的缓存是基于` [namespace:sql语句:参数] `来进行缓存的，意思就是，`SqlSession` 的 `HashMap` 存储缓存数据时，是使用 `[namespace:sql:参数] `作为 `key` ，查询返回的语句作为 `value` 保存的。
@@ -160,6 +160,18 @@ mybatis中还可以配置userCache和flushCache等配置项，userCache是用来
 ```
 
 一般下执行完commit操作都需要刷新缓存，flushCache=true表示刷新缓存，这样可以避免数据库脏读。所以我们不用设置，默认即可。
+
+> **关于sqlSessionFactory 和二级缓存的关系**  
+
+- sqlSessionFactory 也就是二级缓存，如果SqlSession对象没有close()或commit(),则不会把缓存数据刷到SqlSessionFactory中 
+- **有效范围** ：同一个factory 内，SqlSession 可以共享
+- **什么时候使用二级缓存：** 当数据被频繁使用查询，而且很少被修改
+- 使用注意步骤：
+  - 在mapper.xml中配置标签：` <cache />` 
+  - 如果标签中不写readOnly="true",则对应的实体需要序列化
+- 当SqlSession 对象执行 close()或commit() 方法时，会把SqlSession缓存刷新到 SqlSessionFactory缓存区中
+
+
 
 #### 2.3 二级缓存实现源码
 

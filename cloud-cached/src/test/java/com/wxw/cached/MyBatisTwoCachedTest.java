@@ -2,6 +2,7 @@ package com.wxw.cached;
 
 import com.wxw.BaseTest;
 import com.wxw.dao.PersonMapper;
+import com.wxw.domain.PersonExample;
 import com.wxw.service.PersonService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.session.SqlSession;
@@ -28,8 +29,7 @@ public class MyBatisTwoCachedTest extends BaseTest {
     /**
      * 测试二级缓存效果，
      *  (1) 不提交事务，sqlSession1查询完数据后，sqlSession2相同的查询是否会从缓存中获取数据。
-     *   结论：当sqlsession没有调用commit()方法时，二级缓存并没有起到作用。
-     *   结论：调用commit()方法时，二级缓存起作用，命中率为50%
+     *   结论1：当sqlsession没有调用commit()或close()方法时，二级缓存并没有起到作用。
      */
     @Test
     public void test_1(){
@@ -37,11 +37,34 @@ public class MyBatisTwoCachedTest extends BaseTest {
         SqlSession sqlSession2 = sqlSessionFactory.openSession(true);
 
         PersonMapper personMapper1 = sqlSession1.getMapper(PersonMapper.class);
+        log.info(" personMapper1 = {}", personMapper1.selectById(3));
         sqlSession1.commit(); // 缓存命中50%
         PersonMapper personMapper2 = sqlSession2.getMapper(PersonMapper.class);
+        log.info(" personMapper2 = {}", personMapper2.selectById(3));
+    }
 
-        log.info(" personMapper1 = {}", personMapper1.selectById(1));
-        log.info(" personMapper2 = {}", personMapper2.selectById(1));
+    /**
+     * 结论2：DML.insert,update/delete 等操作并提交后，会清空缓存
+     */
+    @Test
+    public void test_2(){
+        SqlSession sqlSession1 = sqlSessionFactory.openSession(true);
+        SqlSession sqlSession2 = sqlSessionFactory.openSession(true);
+        SqlSession sqlSession3 = sqlSessionFactory.openSession(true);
+
+        PersonMapper personMapper1 = sqlSession1.getMapper(PersonMapper.class);
+        log.info(" personMapper1 = {}", personMapper1.selectById(3));
+        sqlSession1.commit(); // 缓存刷新到SqlSessionFactory|| namespace
+        PersonMapper personMapper2 = sqlSession2.getMapper(PersonMapper.class);
+        // 缓存命中50%
+        log.info(" personMapper2 = {}", personMapper2.selectById(3));
+
+        PersonMapper personMapper3 = sqlSession3.getMapper(PersonMapper.class);
+        PersonExample example = new PersonExample();
+        example.createCriteria().andIdEqualTo(2);
+        personMapper3.deleteByExample(example);
+        log.info(" personMapper3 = {}", personMapper3.selectById(3));
+
     }
 
 }
