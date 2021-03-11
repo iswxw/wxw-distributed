@@ -15,6 +15,7 @@
         <module>cloud-jvm</module>
         <module>cloud-configuration</module>
         <module>cloud-cached</module>
+        <module>cloud-tracing</module>
     </modules>
 
     <!-- 统一管理jar包版本 -->
