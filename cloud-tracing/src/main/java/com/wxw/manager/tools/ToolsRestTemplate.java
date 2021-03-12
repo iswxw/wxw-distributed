@@ -20,7 +20,7 @@ import java.util.Map;
  * @author: wxw
  * @create: 2019-06-04 18:00
  */
-public class RestTemplateUtil {
+public class ToolsRestTemplate {
     /**
      * 发送表单参数的post请求
      *
