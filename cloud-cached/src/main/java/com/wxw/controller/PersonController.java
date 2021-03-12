@@ -25,7 +25,6 @@ import java.util.List;
 @Slf4j
 public class PersonController {
 
-
     @Resource
     private PersonService personService;
 

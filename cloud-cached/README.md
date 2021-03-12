@@ -1,4 +1,4 @@
-### 缓存问题处理
+### 缓存问题梳理
 
 
 
@@ -323,13 +323,10 @@ public class Mybatis2RedisCached implements Cache {
 
 ```
 
-
-
 #### 2.5 常见问题
 
 1. **是否需要给二级缓存 设置一个过期时间?（自定义缓存中flushInterval无效） ** 
    - https://zhuanlan.zhihu.com/p/92817615
-2. 
 
 相关文章
 
@@ -337,10 +334,61 @@ public class Mybatis2RedisCached implements Cache {
 2. [MyBatis二级缓存原理详解](https://www.cnblogs.com/alimayun/p/10952543.html)  
 3. [聊聊MyBatis缓存机制-美团](https://tech.meituan.com/2018/01/19/mybatis-cache.html)   
 
-### 3. Spring 与 Session 缓存
+### 3. SpringBoot 与 Session 缓存
 
+在传统的单服务架构中，一般来说，只有一个服务器，那么不存在 Session 共享问题，但是在分布式/集群项目中，Session 共享则是一个必须面对的问题，先看一个简单的架构图：
 
+![img](https://img2020.cnblogs.com/blog/2102410/202102/2102410-20210227195153117-864211759.png) 
 
+在这样的架构中，会出现一些单服务中不存在的问题，例如客户端发起一个请求，这个请求到达 Nginx 上之后，被 Nginx 转发到 Tomcat A 上，然后在 Tomcat A 上往 session 中保存了一份数据，下次又来一个请求，这个请求被转发到 Tomcat B 上，此时再去 Session 中获取数据，发现没有之前的数据。对于这一类问题的解决，思路很简单，就是将各个服务之间需要共享的数据，保存到一个公共的地方（主流方案就是 **Redis**）：
 
+![](https://img2020.cnblogs.com/blog/2102410/202102/2102410-20210227195220556-1326965407.png) 
+
+当所有 Tomcat 需要往 Session 中写数据时，都往 Redis 中写，当所有 Tomcat 需要读数据时，都从 Redis 中读。这样，不同的服务就可以使用相同的 Session 数据了。
+
+这样的方案，可以由开发者手动实现，即手动往 Redis 中存储数据，手动从 Redis 中读取数据，相当于使用一些 Redis 客户端工具来实现这样的功能，毫无疑问，手动实现工作量还是蛮大的。
+
+一个简化的方案就是使用 Spring Session 来实现这一功能，Spring Session 就是使用 Spring 中的代理过滤器，将所有的 Session 操作拦截下来，自动的将数据 同步到 Redis 中，或者自动的从 Redis 中读取数据。
+
+**对于开发者来说，所有关于 Session 同步的操作都是透明的，开发者使用 Spring Session，一旦配置完成后，具体的用法就像使用一个普通的 Session 一样。** 
+
+此时关于 session 共享的配置就已经全部完成了，session 共享的效果我们已经看到了，但是每次访问都是我自己手动切换服务实例，因此，接下来我们来引入 Nginx ，实现服务实例自动切换。
+
+#### 3.1 Nginx 实例配置
+
+```conf
+	upstream mysession{
+	  server localhost:8080 weight=1;
+	  server localhost:8081 weight=2;
+	}
+    server {
+        listen       8000;
+        server_name  localhost;
+
+        #charset koi8-r;
+
+        #access_log  logs/host.access.log  main;
+
+        location / {
+            root   html;
+            index  index.html index.htm;
+			proxy_pass http://mysession;
+        }
+     }
+```
+
+**测试链接** 
+
+- ` http://localhost:8000/session/set`   根据权重返回对应的端口：` 8080 8081` 
+- ` http://localhost:8000/session/get`  根据Nginx权重分流到不同的tomcat ：返回：` Java半颗糖:8081` 、` Java半颗糖:8080` 
+
+通时,redis也会对应的缓存K-V 键值对：
+
+![1615539915895](assets/1615539915895.png) 
+
+相关文章
+
+1. [分布式环境不同 服务器 之间 session 共享问题](https://www.cnblogs.com/ljstudy/p/14457026.html) 
+2. 源码参见地址：https://github.com/GitHubWxw/wxw-concurrent 
 
 ### 4.  本地缓存
