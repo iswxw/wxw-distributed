@@ -39,7 +39,7 @@ import java.util.concurrent.Executor;
 
 /**
  * @author weixiaowei
- * @desc: 通过实现AsyncConfigurer自定义异常线程池，包含异常处理
+ * @desc: 注意：该线程池被所有的异步任务共享，而不属于某一个异步任务
  * @date: 2021/7/5
  */
 @Slf4j
