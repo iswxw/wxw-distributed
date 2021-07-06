@@ -25,6 +25,17 @@ public class AsyncController {
     private AsyncService asyncService;
 
     /**
+     * 线程池 异常捕获
+     *
+     */
+    @GetMapping(value = "test1")
+    public String test1(){
+        asyncService.asyncMethodWithVoidReturnType();
+        log.info("============>" + Thread.currentThread().getName());
+        return "异步线程池，捕获异常,正在解析......";
+    }
+
+    /**
      * 异步处理2：使用springBoot自带async注解
      * curl http://localhost:8080/async/test2
      */
@@ -50,6 +61,7 @@ public class AsyncController {
         log.info("=========》当前线程名：" + Thread.currentThread().getName());
         return "异步,正在解析......";
     }
+
 
 
 }

@@ -35,10 +35,10 @@ import java.util.concurrent.TimeUnit;
 public class CommonAsyncController {
 
     @Resource
-    private ThreadPoolTaskExecutor myThreadPoolTaskExecutor;
+    public ThreadPoolTaskExecutor taskExecutor;
 
     /**
-     * Servlet方式实现异步请求
+     * Servlet 方式实现异步请求
      * curl http://localhost:8080/async/servlet
      */
     @GetMapping(value = "/async/servlet")
@@ -89,14 +89,13 @@ public class CommonAsyncController {
     }
 
     /**
-     * 直接返回的参数包裹一层callable即可，可以继承WebMvcConfigurerAdapter类来设置默认线程池和超时处理
+     * 直接返回的参数包裹一层callable即可，可以继承WebMvcConfigurer类来设置默认线程池和超时处理
      *
      * @return
      */
     @GetMapping(value = "/async/callable")
     public Callable<String> callableReq () {
         System.out.println("外部线程：" + Thread.currentThread().getName());
-
         return new Callable<String>() {
             @Override
             public String call() throws Exception {
@@ -162,7 +161,7 @@ public class CommonAsyncController {
                 System.out.println("调用完成");
             }
         });
-        myThreadPoolTaskExecutor.execute(new Runnable() {
+        taskExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 //处理业务逻辑
@@ -173,6 +172,5 @@ public class CommonAsyncController {
         });
         return result;
     }
-
 
 }

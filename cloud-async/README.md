@@ -21,6 +21,76 @@ Spring 已经实现的异常线程池：
 4. SimpleThreadPoolTaskExecutor：是Quartz的SimpleThreadPool的类。线程池同时被quartz和非quartz使用，才需要使用此类
 5. ThreadPoolTaskExecutor ：最常使用，推荐。 其实质是对java.util.concurrent.ThreadPoolExecutor的包装
 
+### 使用
+
+#### 1. 线程池包含异常处理
+
+```java
+package com.wxw.manager.pools.threadpool_exception_handler;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.interceptor.AsyncUncaughtExceptionHandler;
+import org.springframework.scheduling.annotation.AsyncConfigurer;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.stereotype.Component;
+
+import java.lang.reflect.Method;
+import java.util.concurrent.Executor;
+
+/**
+ * @author weixiaowei
+ * @desc: 通过实现AsyncConfigurer自定义异常线程池，包含异常处理
+ * @date: 2021/7/5
+ */
+@Slf4j
+@Component
+public class MyAsyncConfigurer implements AsyncConfigurer {
+
+    @Override
+    public Executor getAsyncExecutor() {
+        ThreadPoolTaskExecutor threadPool = new ThreadPoolTaskExecutor();
+        threadPool.setCorePoolSize(1);
+        threadPool.setMaxPoolSize(2);
+        threadPool.setWaitForTasksToCompleteOnShutdown(true);
+        threadPool.setAwaitTerminationSeconds(60 * 15);
+        threadPool.setThreadNamePrefix("MyAsync-");
+        threadPool.initialize();
+        return threadPool;
+    }
+
+    @Override
+    public AsyncUncaughtExceptionHandler getAsyncUncaughtExceptionHandler() {
+        return new MyAsyncExceptionHandler();
+    }
+
+}
+
+/**
+ * 自定义异常处理类
+ *
+ * @author hry
+ */
+@Slf4j
+class MyAsyncExceptionHandler implements AsyncUncaughtExceptionHandler {
+    @Override
+    public void handleUncaughtException(Throwable throwable, Method method, Object... obj) {
+        log.info("Exception message - " + throwable.getMessage());
+        log.info("Method name - " + method.getName());
+        for (Object param : obj) {
+            log.info("Parameter value - " + param);
+        }
+    }
+}
+```
+
+> 测试类
+
+
+
+相关文章
+
+1. [SpringBoot 线程池配置 实现AsyncConfigurer接口方法](https://www.cnblogs.com/sbj-dawn/p/9075573.html)  
+
 ### 实践
 
 #### 1. 异步请求
@@ -91,6 +161,16 @@ Spring 已经实现的异常线程池：
 
 - 需要在启动类加入@EnableAsync使异步调用@Async注解生效
 
+  - 在启动类上可以直接使用` @EnableAsync ` 注解，使` @Async ` 注解生效
+  - 在其它配置类需要加`@Configuration` 注解，使` @Async ` 注解生效
+
+  ```java
+  @EnableAsync
+  @Configuration
+  public class AppStartConfig {
+  }
+  ```
+
 - 在需要异步执行的方法上加入此注解即可@Async("threadPool")，threadPool为自定义线程池。
 
 ##### 2.1 注意事项
@@ -105,11 +185,15 @@ Spring 已经实现的异常线程池：
 
 - 调用同一个类下注有@Async异步方法：
 
-- 在spring中像@Async和@Transactional、cache等注解本质使用的是动态代理，其实Spring容器在初始化的时候Spring容器会将含有AOP注解的类对象“替换”为代理对象（简单这么理解），那么注解失效的原因就很明显了，就是因为调用方法的是对象本身而不是代理对象，因为没有经过Spring容器，那么解决方法也会沿着这个思路来解决。
+- 在spring中像@Async和@Transactional、cache等注解本质使用的是动态代理，其实Spring容器在初始化的时候Spring容器会将含有AOP注解的类对象“替换”为代理对象（简单这么理解），那么注解失效的原因就很明显了，就是因为调用方法的是对象本身而不是代理对象，因为没有经过Spring容器，那么解决方法也会沿着这个思路来解决。【[参考](https://blog.csdn.net/u011277123/article/details/85250012)】
 
 - 调用的是静态(static )方法
 
 - 调用(private)私有化方法
+
+> 解决思路
+
+
 
 #### 3. 异步请求和异步调用的区别
 

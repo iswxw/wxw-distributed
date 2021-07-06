@@ -5,7 +5,6 @@ package com.wxw.manager.pools;
  * 开启线程处理任务
  */
 public class RunnableTask1 implements Runnable{
-
     @Override
     public void run(){
         synchronized (this){

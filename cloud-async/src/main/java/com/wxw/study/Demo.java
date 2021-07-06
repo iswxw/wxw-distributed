@@ -12,6 +12,6 @@ public class Demo {
         /**
          * 常用的spring自带的线程池实现
          */
-        ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
+        // ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
     }
 }
