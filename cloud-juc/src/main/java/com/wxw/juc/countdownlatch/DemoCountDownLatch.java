@@ -1,4 +1,4 @@
-package com.wxw.juc;
+package com.wxw.juc.countdownlatch;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -9,7 +9,7 @@ import java.util.concurrent.CountDownLatch;
  * @ Description：CountDownLatch
  * @ Version:   v_0.0.1
  */
-public class CountDownLatchDemo {
+public class DemoCountDownLatch {
     public static void main(String[] args) throws InterruptedException {
         CountDownLatchUsed();
     }
