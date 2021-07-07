@@ -1,4 +1,4 @@
-package com.wxw.manager.conf;
+package com.wxw.manager.config;
 
 import com.alibaba.fastjson.support.spring.GenericFastJsonRedisSerializer;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;

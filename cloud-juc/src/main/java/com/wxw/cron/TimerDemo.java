@@ -10,6 +10,5 @@ package com.wxw.cron;
  */
 public class TimerDemo {
     public static void main(String[] args) {
-
     }
 }

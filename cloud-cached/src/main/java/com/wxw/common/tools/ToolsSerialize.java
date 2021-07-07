@@ -1,4 +1,4 @@
-package com.wxw.manager.tools;
+package com.wxw.common.tools;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;

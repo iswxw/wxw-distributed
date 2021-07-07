@@ -1,6 +1,5 @@
 package com.wxw.manager.function;
 
-import com.wxw.manager.tools.ToolsApplicationContext;
 import org.apache.ibatis.cache.Cache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

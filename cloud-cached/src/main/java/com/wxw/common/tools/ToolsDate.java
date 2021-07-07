@@ -1,4 +1,4 @@
-package com.wxw.manager.tools;
+package com.wxw.common.tools;
 
 import cn.hutool.core.date.DatePattern;
 import lombok.extern.slf4j.Slf4j;

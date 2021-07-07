@@ -1,7 +1,7 @@
 package com.wxw;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.wxw.manager.conf.MyBatisDataBaseConfig;
+import com.wxw.manager.config.MyBatisDataBaseConfig;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.runner.RunWith;

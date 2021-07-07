@@ -1,4 +1,4 @@
-package com.wxw.manager.tools;
+package com.wxw.common.tools;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

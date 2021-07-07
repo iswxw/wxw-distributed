@@ -1,6 +1,5 @@
-package com.wxw.manager.conf;
+package com.wxw.manager.config;
 
-import com.wxw.manager.function.Mybatis2RedisCached;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;

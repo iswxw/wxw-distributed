@@ -1,4 +1,4 @@
-package com.wxw.manager.tools;// 增加一个MessageConverter
+package com.wxw.common.tools;// 增加一个MessageConverter
 
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;

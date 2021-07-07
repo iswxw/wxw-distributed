@@ -1,9 +1,8 @@
 package com.wxw.service.impl;
 
 import com.wxw.dao.RedisCachedDao;
-import com.wxw.domain.Address;
 import com.wxw.domain.Person;
-import com.wxw.manager.conf.RedisCacheConfig;
+import com.wxw.manager.config.RedisCacheConfig;
 import com.wxw.service.RedisCachedService;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -12,7 +11,6 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.time.LocalDate;
 import java.util.Date;
 
 /**

@@ -1,4 +1,4 @@
-package com.wxw.manager.tools;
+package com.wxw.common.tools;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

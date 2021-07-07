@@ -1,4 +1,4 @@
-package com.wxw.manager.conf;
+package com.wxw.manager.config;
 
 import org.springframework.context.annotation.Configuration;
 

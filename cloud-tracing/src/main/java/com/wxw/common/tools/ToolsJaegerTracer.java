@@ -1,4 +1,4 @@
-//package com.wxw.manager.tools;
+//package com.wxw.common.tools;
 //
 //import io.jaegertracing.internal.JaegerTracer;
 //import io.jaegertracing.internal.metrics.Metrics;
