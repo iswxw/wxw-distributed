@@ -17,7 +17,6 @@
         <module>cloud-cached</module>
         <module>cloud-tracing</module>
         <module>cloud-async</module>
-        <module>cloud-batch</module>
     </modules>
 
     <!-- 统一管理jar包版本 -->

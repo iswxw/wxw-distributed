@@ -1,7 +1,7 @@
 package com.wxw.lock;
 
 import com.wxw.base.BaseRedisTest;
-import com.wxw.common.redission_annotation_lock.RedisLock;
+import com.wxw.manager.distributed_lock.redission_annotation_lock.RedisLock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;

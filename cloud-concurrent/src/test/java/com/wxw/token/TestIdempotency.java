@@ -1,6 +1,6 @@
 package com.wxw.token;
 
-import com.wxw.common.Idempotency.TokenUtilService;
+import com.wxw.manager.Idempotency.TokenUtilService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;

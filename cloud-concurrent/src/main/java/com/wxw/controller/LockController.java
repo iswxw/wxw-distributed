@@ -1,6 +1,6 @@
 package com.wxw.controller;
 
-import com.wxw.common.redission_annotation_lock.redission.ApiLock;
+import com.wxw.manager.distributed_lock.redission_annotation_lock.redission.ApiLock;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -59,9 +59,9 @@ public class LockController {
         }
     }
 
-    @RequestMapping("/lock3")
-    @ApiLock("#testParam.name + ',' + #testParam.nickName")
-    public void testData03(){
-        /*基于注解实现*/
-    }
+//    @RequestMapping("/lock3")
+//    @ApiLock("#testParam.name + ',' + #testParam.nickName")
+//    public void testData03(){
+//        /*基于注解实现*/
+//    }
 }

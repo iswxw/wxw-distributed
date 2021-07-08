@@ -1,6 +1,6 @@
 package com.wxw.delay_queue.timer_delay_queue;
 
-import com.wxw.common.manager.tools.DateTools;
+import com.wxw.common.tools.DateTools;
 
 import java.util.Timer;
 import java.util.TimerTask;
