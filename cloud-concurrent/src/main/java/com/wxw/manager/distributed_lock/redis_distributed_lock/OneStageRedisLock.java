@@ -6,6 +6,10 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
+import java.util.concurrent.TimeUnit;
+
+import static jodd.util.ThreadUtil.sleep;
+
 /**
  * @author ：wxw.
  * @date ： 14:42 2021/2/2
@@ -28,18 +32,25 @@ public class OneStageRedisLock{
      */
     public void lock() {
         String uniqueId = OrderNumGenerator.getUniqueId();
+        // setNx() 如果存在 则设置成功，不存在设置失败
         boolean lock = redisTemplate.opsForValue().setIfAbsent("lock", uniqueId);
-        if (lock) {
-            // TODO: 2021/2/2 加锁成功... 执行业务
+       try {
+           if (lock) {
+               // TODO: 2021/2/2 加锁成功... 执行业务
+               redisTemplate.expire("lock", 30, TimeUnit.SECONDS) ;
+               // 正在执行业务逻辑，突然宕机，后面的释放锁  unlock() ，没有执行，导致死锁
 
-            // 正在执行业务逻辑，突然宕机，后面的释放锁  unlock() ，没有执行，导致死锁
-
-        } else {
-            // 加锁失败，重试。 synchronized()
-            // 休眠100ms重试
-            // 自旋
-            lock();
-        }
+           } else {
+               // 加锁失败，重试。 synchronized()
+               // 休眠100ms重试
+               // 为什么要休眠一段时间，因为该程序存在递归调用，可能会导致栈空间溢出。
+               sleep(100);
+               // 自旋
+               lock();
+           }
+       } finally {
+           unlock();
+       }
     }
     /**
      * 释放锁

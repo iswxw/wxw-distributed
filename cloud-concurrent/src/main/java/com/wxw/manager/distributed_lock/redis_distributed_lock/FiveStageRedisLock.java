@@ -36,14 +36,10 @@ public class FiveStageRedisLock {
     private RedisScript<String> unLockRedisScript = new DefaultRedisScript<>(script2, String.class);
 
     /**
-     * 1. 占分布式锁，去redis占坑 获取锁——设置值并设定过期时间是一个原子操作
-     * 分布式锁加锁
+     * 基于FourStageRedisLock 释放锁=校验key后再释放锁 + 锁续期
      * 面临的问题：加入刚拿到锁后正在执行业务逻辑时锁的 value 过期了,此时，其他人拿到锁，并设置了新值，
      *          但是该线程执行完业务逻辑，并删除了别人刚加的锁，（删除锁不是原子操作）
      * 解决方案：删除锁必须保证原子性。使用redis+Lua脚本。
-     *
-     *
-     *
      * @param lockKey       redis的key
      * @param value         redis的value要求是随机串，防止释放其他请求的锁
      * @param expireTime    redis的key 的过期时间  单位（秒) 防止死锁，导致其他请求无法正常执行业务

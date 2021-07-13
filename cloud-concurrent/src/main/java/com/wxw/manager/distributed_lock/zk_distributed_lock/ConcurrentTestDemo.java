@@ -43,8 +43,8 @@ public class ConcurrentTestDemo {
                         e.printStackTrace();
                     }
                     // 调用创建订单服务
-                    orderService.createOrder();
-//                    orderServiceLock.createOrder();
+//                    orderService.createOrder();
+                    orderServiceLock.createOrder();
                 }
             }).start();
         }

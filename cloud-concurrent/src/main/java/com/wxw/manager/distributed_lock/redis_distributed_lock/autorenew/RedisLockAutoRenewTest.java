@@ -11,9 +11,6 @@ import com.wxw.common.tools.OrderNumGenerator;
  */
 public class RedisLockAutoRenewTest {
 
-
-
-
     public void lock(){
         String uniqueId = OrderNumGenerator.getUniqueId();
         RedisLockAutoRenew redisLockAutoRenew = new RedisLockAutoRenew("lockField", "lockKey", uniqueId, 30);
@@ -23,8 +20,6 @@ public class RedisLockAutoRenewTest {
         // 设置守护线程的关闭标记
         redisLockAutoRenew.stop();
         // 通过interrupt()去中断sleep状态，保证线程及时销毁
-        survivalThread.interrupt();
-
     }
 
     public static void main(String[] args) {

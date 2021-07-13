@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author ：wxw.
  * @date ： 15:17 2021/2/2
- * @description：第四阶段 不能删除别人的锁
+ * @description
  * @link:
  * @version: v_0.0.1
  */
@@ -22,11 +22,13 @@ public class FourStageRedisLock {
     public static final String uniqueId = OrderNumGenerator.getUniqueId();
 
     /**
-     * 1. 占分布式锁，去redis占坑
-     * 分布式锁加锁
+     * 基于ThreeStageRedisLock知道 如果出现 FullGC、业务执行时间较长，需要进行 锁续期 和 校验后再释放锁
      * 面临的问题：加入刚拿到锁后正在执行业务逻辑时 锁的 value 过期了,此时，其他人拿到锁，并设置了新值，
      *          但是该线程执行完业务逻辑，并删除了key对应的别人刚加的锁，（删除锁不是原子操作）
-     * 解决方案：删除锁必须保证原子性。使用redis+Lua脚本。
+     * 解决方案：
+     *  - 删除锁必须保证原子性（使用随机数的形式加锁，并校验是否是自己加的锁+再释放）。
+     *     - 使用redis+Lua脚本。
+     *  - 锁续期（watch、自定义守护线程并循环检查锁的过期时间）
      */
     public void lock() {
         boolean lock = redisTemplate.opsForValue().setIfAbsent("lock", uniqueId);
