@@ -28,27 +28,21 @@ public class TwoStageRedisLock {
      */
     public void lock() {
         String uniqueId = OrderNumGenerator.getUniqueId();
-       // boolean lock = redisTemplate.opsForValue().setIfAbsent("lock", uniqueId);
-        boolean lock =  redisTemplate.opsForValue().setIfAbsent("lock",uniqueId,30, TimeUnit.SECONDS);
+        boolean lock = redisTemplate.opsForValue().setIfAbsent("lock", uniqueId, 30, TimeUnit.SECONDS);
         if (lock) {
             // TODO: 2021/2/2 加锁成功... 执行业务
             // 突然断电 || 宕机
             // 设置过期时间 30s过期
             //  redisTemplate.expire("lock", 30, TimeUnit.SECONDS) ;
 
+            // 业务逻辑执行完后 删除Key 释放锁
+            redisTemplate.delete("lock");
         } else {
             // 加锁失败，重试。 synchronized()
             // 休眠100ms重试
             // 自旋
             lock();
         }
-    }
-    /**
-     * 释放锁
-     */
-    public void unlock(){
-        // 业务逻辑执行完后 删除Key 释放锁
-        redisTemplate.delete("lock");
     }
 }
 

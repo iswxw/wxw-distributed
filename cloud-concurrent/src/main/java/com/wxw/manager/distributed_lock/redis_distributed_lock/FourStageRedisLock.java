@@ -31,14 +31,13 @@ public class FourStageRedisLock {
      *  - 锁续期（watch、自定义守护线程并循环检查锁的过期时间）
      */
     public void lock() {
-        boolean lock = redisTemplate.opsForValue().setIfAbsent("lock", uniqueId);
+        boolean lock = redisTemplate.opsForValue().setIfAbsent("lock", uniqueId, 300, TimeUnit.SECONDS);
         if (lock) {
             // TODO: 2021/2/2 加锁成功... 执行业务
 
             // 突然断电
-
             // 设置过期时间 30s过期
-            redisTemplate.expire("lock", 30, TimeUnit.SECONDS) ;
+            // redisTemplate.expire("lock", 30, TimeUnit.SECONDS) ;
 
             String lockValue = redisTemplate.opsForValue().get("lock").toString();
             if(uniqueId.equals(lockValue)) {
@@ -52,17 +51,6 @@ public class FourStageRedisLock {
             // 休眠100ms重试
             // 自旋
             lock();
-        }
-    }
-
-    /**
-     * 释放锁
-     */
-    public void unlock(){
-        // 业务逻辑执行完后 删除Key 释放锁
-        Object lock = redisTemplate.opsForValue().get("lock");
-        if (uniqueId.equals(lock)){
-            redisTemplate.delete("lock");
         }
     }
 }
