@@ -1,5 +1,7 @@
 package com.wxw.juc.copy_on_write_arraylist;
 
+import java.util.concurrent.CopyOnWriteArrayList;
+
 /**
  * @author ：wxw.
  * @date ： 11:03 2021/1/18
@@ -9,6 +11,6 @@ package com.wxw.juc.copy_on_write_arraylist;
  */
 public class CopyOnWriteArrayListTest {
     public static void main(String[] args) {
-
+        CopyOnWriteArrayList<Integer> copyOnWriteArrayList = new CopyOnWriteArrayList<>();
     }
 }
