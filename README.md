@@ -4,13 +4,16 @@
 
 ### 项目预览
 
-- [【项目实战】cloud-concurrent](https://github.com/GitHubWxw/wxw-concurrent/tree/master/cloud-concurrent)  —分布式锁、接口幂、重试等性等问题
-- [【项目实战】cloud-delayqueue](https://github.com/GitHubWxw/wxw-concurrent/tree/master/cloud-delayqueue)  —延迟队列，包括数据库，DelayQueue，定时任务，MQ等实现
-- [【项目实战】cloud-juc](https://github.com/GitHubWxw/wxw-concurrent/tree/master/cloud-juc)  —主要是并发编程中的实例和常见问题解决方案
-- [【项目实战】cloud-jvm](https://github.com/GitHubWxw/wxw-concurrent/tree/master/cloud-jvm)  —主要是Java虚拟机相关问题整理
-- [【项目实战】cloud-cached](https://github.com/GitHubWxw/wxw-concurrent/tree/dev-wxw/cloud-cached)   —主要是spring相关的本地缓存、session缓存、 redis、mybatis缓存处理
-- [【项目实战】cloud-tracing](https://github.com/GitHubWxw/wxw-concurrent/tree/dev-wxw/cloud-tracing)   —主要是服务之间的链路追踪的实践，包括但不限于open-tracing结合SkyWalking（Java）、Jaeger（go）等。
-- [【项目实战】cloud-async](https://github.com/GitHubWxw/wxw-concurrent/tree/dev-wxw/cloud-async)  —主要是基于servlet、spring的异步处理思路
+| 核心模块         | 备注说明                                                     |
+| ---------------- | ------------------------------------------------------------ |
+| cloud-concurrent | 主要是分布式锁、接口幂、重试等性等问题                       |
+| cloud-delayqueue | 主要是延迟队列，包括数据库，DelayQueue，定时任务，MQ等实现   |
+| cloud-juc        | 主要是并发编程中的实例和常见问题解决方案                     |
+| cloud-jvm        | 主要是Java虚拟机相关问题整理                                 |
+| cloud-cached     | 主要是spring相关的本地缓存、session缓存、 redis、mybatis缓存处理 |
+| cloud-tracing    | 主要是服务之间的链路追踪的实践，包括但不限于open-tracing结合SkyWalking（Java）、Jaeger（go）等 |
+| cloud-async      | 主要是基于servlet、spring的异步处理思路                      |
+| cloud-safety     | 主要是针对安全方向通过加密、解密实现网络通信、数据等安全保障。 |
 
 
 

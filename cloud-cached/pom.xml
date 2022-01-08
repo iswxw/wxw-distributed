@@ -15,7 +15,7 @@
     <dependencies>
         <!--配置模块-->
         <dependency>
-            <groupId>com.wxw.configuration</groupId>
+            <groupId>com.wxw</groupId>
             <artifactId>cloud-configuration</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
