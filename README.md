@@ -11,7 +11,7 @@
 | cloud-juc        | 主要是并发编程中的实例和常见问题解决方案                     |
 | cloud-jvm        | 主要是Java虚拟机相关问题整理                                 |
 | cloud-cached     | 主要是spring相关的本地缓存、session缓存、 redis、mybatis缓存处理 |
-| cloud-tracing    | 主要是服务之间的链路追踪的实践，包括但不限于open-tracing结合SkyWalking（Java）、Jaeger（go）等 |
+| cloud-tracing    | 主要是服务之间的链路追踪的实践                               |
 | cloud-async      | 主要是基于servlet、spring的异步处理思路                      |
 | cloud-safety     | 主要是针对安全方向通过加密、解密实现网络通信、数据等安全保障。 |
 
