@@ -122,7 +122,7 @@ RSA加密是一种非对称加密，在公开密钥加密和电子商业中RSA�
 - 消息发送方：甲方，持有公钥
 - 消息接收方：乙方，持有私钥
 
-![image-20220108192831780](asserts/image-20220108192831780.png)  
+[![https://gitee.com/wwxw/image/raw/master/20220109/qfrUG@aMU5oz.png](https://gitee.com/wwxw/image/raw/master/20220109/qfrUG@aMU5oz.png)](https://gitee.com/wwxw/image/raw/master/20220109/qfrUG@aMU5oz.png)   
 
 ##### 1.2.1 加密解密过程
 
