@@ -17,6 +17,7 @@
         <module>cloud-juc</module>
         <module>cloud-jvm</module>
         <module>cloud-tracing</module>
+        <module>cloud-async</module>
     </modules>
 
     <!-- 统一管理jar包版本 -->
