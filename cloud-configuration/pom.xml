@@ -3,13 +3,11 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>wxw-concurrent</artifactId>
+        <artifactId>wxw-distributed</artifactId>
         <groupId>com.wxw</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>com.wxw.configuration</groupId>
     <artifactId>cloud-configuration</artifactId>
 
     <!--maven jar 包依赖-->
