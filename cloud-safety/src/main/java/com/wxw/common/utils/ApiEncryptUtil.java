@@ -1,7 +1,6 @@
 package com.wxw.common.utils;
 
 import cn.hutool.core.io.FileUtil;
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.xml.bind.DatatypeConverter;
@@ -12,6 +11,7 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -27,17 +27,47 @@ public class ApiEncryptUtil {
     public static final String PUB_KEY = "rsaKey/public.key";
     public static final String PRI_KEY = "rsaKey/private.key";
 
+    public static final String SIGN_ALGORITHMS = "SHA256WithRSA";
+
+    // RSA最大加密明文大小
+    private static final int MAX_ENCRYPT_BLOCK = 117;
+
+    // RSA最大解密密文大小
+    private static final int MAX_DECRYPT_BLOCK = 128;
+
 
     public static void main(String[] args) throws Exception {
-
+        System.out.println("==============生成密钥===================");
         // 密钥生成测试
         testCreateKey();
 
+        System.out.println("==============普通加密和解密==============");
         // 密钥读取测试
         testReadKey();
 
-        // 签名验签测试
+        System.out.println("=============分段加密和解密===============");
+        // 公钥分段加密和私钥分段解密测试
+        testPartitionReadKey();
+
+        System.out.println("==============签名和验签==================");
+        // 签名验签测试，避免被篡改
         testSignVerify();
+    }
+
+    private static void testPartitionReadKey() throws Exception {
+        String value = getKey("rsaKey/public.key");
+        System.out.println("public: " + value);
+
+        String privateKeyStr = getKey(ApiEncryptUtil.PRI_KEY);
+        String publicKeyStr = getKey(ApiEncryptUtil.PUB_KEY);
+        //消息发送方
+        String originData = "cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile";
+        System.out.println("原文：" + originData);
+        String encryptData = publicPartitionEncrypt(createPublicKey(publicKeyStr), originData.getBytes(StandardCharsets.UTF_8));
+        System.out.println("分段加密：" + encryptData);
+        //消息接收方
+        String decryptData = privatePartitionDecrypt(createPrivateKey(privateKeyStr), parseBase64Binary(encryptData));
+        System.out.println("分段解密：" + decryptData);
     }
 
 
@@ -54,14 +84,14 @@ public class ApiEncryptUtil {
         System.out.println("公钥：" + publicKeyStr);
 
         // 写入资源目录
-        writeToFile(publicKeyStr,PUB_KEY);
-        writeToFile(privateKeyStr,PRI_KEY);
+        writeToFile(publicKeyStr, PUB_KEY);
+        writeToFile(privateKeyStr, PRI_KEY);
 
         //消息发送方
         String originData = "cicada-smile";
         System.out.println("原文：" + originData);
         String encryptData = encrypt(createPublicKey(publicKeyStr), originData.getBytes());
-        System.out.println("加密："  + encryptData);
+        System.out.println("加密：" + encryptData);
 
         //消息接收方
         String decryptData = decrypt(createPrivateKey(privateKeyStr), parseBase64Binary(encryptData));
@@ -99,11 +129,11 @@ public class ApiEncryptUtil {
      * @throws Exception
      */
     public static void testSignVerify() throws Exception {
-        String signData = "cicada-smile";
+        String signData = "cicada-smile-cicada-smile";
         String privateKeyStr = getKey(ApiEncryptUtil.PRI_KEY);
         String publicKeyStr = getKey(ApiEncryptUtil.PUB_KEY);
-        String signValue = sign(signData, ApiEncryptUtil.createPrivateKey(privateKeyStr));
-        boolean flag = verify(signData, ApiEncryptUtil.createPublicKey(publicKeyStr), signValue);
+        String signValue = sign(signData, createPrivateKey(privateKeyStr));
+        boolean flag = verify(signData, createPublicKey(publicKeyStr), signValue);
         System.out.println("原文:" + signData);
         System.out.println("签名:" + signValue);
         System.out.println("验签:" + flag);
@@ -210,11 +240,6 @@ public class ApiEncryptUtil {
 
     /**
      * 6. 私钥解密
-     *
-     * @param privateKey
-     * @param cipherData
-     * @return
-     * @throws Exception
      */
     public static String decrypt(RSAPrivateKey privateKey, byte[] cipherData) throws Exception {
         if (privateKey == null) {
@@ -243,7 +268,7 @@ public class ApiEncryptUtil {
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(keyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         PrivateKey key = keyFactory.generatePrivate(keySpec);
-        Signature signature = Signature.getInstance("MD5withRSA");
+        Signature signature = Signature.getInstance(SIGN_ALGORITHMS);
         signature.initSign(key);
         signature.update(signData.getBytes());
         return printBase64Binary(signature.sign());
@@ -252,9 +277,6 @@ public class ApiEncryptUtil {
     /**
      * 8. 公钥验签
      *
-     * @param srcData
-     * @param publicKey
-     * @param sign
      * @return
      * @throws Exception
      */
@@ -263,7 +285,7 @@ public class ApiEncryptUtil {
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(keyBytes);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         PublicKey key = keyFactory.generatePublic(keySpec);
-        Signature signature = Signature.getInstance("MD5withRSA");
+        Signature signature = Signature.getInstance(SIGN_ALGORITHMS);
         signature.initVerify(key);
         signature.update(srcData.getBytes());
         return signature.verify(parseBase64Binary(sign));
@@ -284,29 +306,93 @@ public class ApiEncryptUtil {
     }
 
     /**
+     * 11. 公钥分段加密
+     * @throws Exception
+     */
+    public static String publicPartitionEncrypt(RSAPublicKey publicKey, byte[] clearData) throws Exception {
+        Cipher cipher = Cipher.getInstance("RSA");
+        cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+        int inputLen = clearData.length;
+        int offSet = 0;
+        byte[] cache;
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            int i = 0;
+            // 对数据分段加密
+            while (inputLen - offSet > 0) {
+                if (inputLen - offSet > MAX_ENCRYPT_BLOCK) {
+                    cache = cipher.doFinal(clearData, offSet, MAX_ENCRYPT_BLOCK);
+                } else {
+                    cache = cipher.doFinal(clearData, offSet, inputLen - offSet);
+                }
+                out.write(cache, 0, cache.length);
+                i++;
+                offSet = i * MAX_ENCRYPT_BLOCK;
+            }
+            byte[] encryptedData = out.toByteArray();
+            return Base64.getEncoder().encodeToString(encryptedData);
+        } catch (Exception e) {
+            throw new Exception("公钥分段加密失败", e);
+        }
+    }
+
+
+    /**
+     * 12. 私钥分段解密
+     * @throws Exception
+     */
+    public static String privatePartitionDecrypt(RSAPrivateKey privateKey, byte[] cipherData) throws Exception {
+        Cipher cipher = Cipher.getInstance("RSA");
+        cipher.init(Cipher.DECRYPT_MODE, privateKey);
+        int inputLen = cipherData.length;
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            int offSet = 0;
+            byte[] cache;
+            int i = 0;
+            // 对数据分段解密
+            while (inputLen - offSet > 0) {
+                if (inputLen - offSet > MAX_DECRYPT_BLOCK) {
+                    cache = cipher.doFinal(cipherData, offSet, MAX_DECRYPT_BLOCK);
+                } else {
+                    cache = cipher.doFinal(cipherData, offSet, inputLen - offSet);
+                }
+                out.write(cache, 0, cache.length);
+                i++;
+                offSet = i * MAX_DECRYPT_BLOCK;
+            }
+            return out.toString();
+        } catch (Exception e) {
+            throw new Exception("私钥分段解密失败", e);
+        }
+    }
+
+
+    /**
      * 根据文件名获取文件
+     *
      * @param fileName
      * @return
      */
-    public static InputStream getFile(String fileName){
+    public static InputStream getFile(String fileName) {
         return ApiEncryptUtil.class.getClassLoader().getResourceAsStream(fileName);
     }
 
     /**
      * 根据文件名获取文件路径
+     *
      * @return
      */
-    public static String getFilePath(){
+    public static String getFilePath() {
         return Objects.requireNonNull(ApiEncryptUtil.class.getClassLoader().getResource("")).getPath();
     }
 
     /**
      * 写数据到指定文件
+     *
      * @param fileName
      */
     private static void writeToFile(String keyStr, String fileName) throws IOException {
         File file = new File(getFilePath() + fileName);
-        if (file.exists()){
+        if (file.exists()) {
             FileUtil.del(file);
         }
         FileUtil.mkParentDirs(file);
