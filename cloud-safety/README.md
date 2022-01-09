@@ -526,3 +526,8 @@ public class ApiEncryptUtil {
 2. [ApiEncryptUtil](https://github.com/iswxw/wxw-distributed/blob/dev-wxw/cloud-safety/src/main/java/com/wxw/common/utils/ApiEncryptUtil.java) 
 3. [分段加密和分段解密](https://gitee.com/FlyLive/RSAdemo/tree/master) 
 
+### 2. Java 与 Go RSA算法互通
+
+相关文章
+
+1. https://blog.csdn.net/igoqhb/article/details/19832259
