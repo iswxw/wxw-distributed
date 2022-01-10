@@ -105,7 +105,7 @@ DES、 IDEA、 RC2、 RC4、 SKIPJACK、 RC5、 AES 算法等采用单钥密码�
 
 - 在与第三方交互时，可以使用 非对称加密+签名算法 避免数据被篡改。
 
-### 1. 签名与验签实践
+### 1. RSA加密和签名与验签实践
 
 #### 1.1 RSA算法简介
 
@@ -525,4 +525,29 @@ public class ApiEncryptUtil {
 1. [RSA加密算法，签名验签流程详解](https://zhuanlan.zhihu.com/p/89749126) 
 2. [ApiEncryptUtil](https://github.com/iswxw/wxw-distributed/blob/dev-wxw/cloud-safety/src/main/java/com/wxw/common/utils/ApiEncryptUtil.java) 
 3. [分段加密和分段解密](https://gitee.com/FlyLive/RSAdemo/tree/master) 
+
+### 2. AES加密和签名和验签
+
+#### 2.1 基础回顾
+
+高级加密标准（英语：Advanced Encryption Standard，缩写：AES），是目前对称密钥加密中比较通用的一种加密方式，该加密方式加解密的密钥即为 AES 密钥。
+
+**AES 密钥与 RSA 密钥的关系** 
+
+![AES&RSA.png](https://cdn.nlark.com/yuque/0/2021/png/179989/1621843413919-9ad3e24a-6e12-4220-8b4f-c02b8fcb4a57.png) 
+
+- AES 密钥是对接口请求和响应内容进行加密，密文无法被第三方识别，从而防止接口传输数据泄露。
+- RSA 密钥是对接口请求和响应内容进行签名，开发者和支付宝开放平台分别加签验签，以确认接口传输的内容没有被篡改。不论接口内容是明文还是密文，RSA 均可正常签名。
+
+开发者可对请求参数先做 AES 加密，然后对密文进行 RSA 签名。
+
+
+
+
+
+---
+
+相关文章
+
+1. [支付宝-ASE秘钥和RSA签名和验签文档](https://opendocs.alipay.com/common/02mse3#AES%20%E5%AF%86%E9%92%A5%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F) 
 
