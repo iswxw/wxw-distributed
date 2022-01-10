@@ -105,7 +105,7 @@ DES、 IDEA、 RC2、 RC4、 SKIPJACK、 RC5、 AES 算法等采用单钥密码�
 
 - 在与第三方交互时，可以使用 非对称加密+签名算法 避免数据被篡改。
 
-### 1. RSA加密和签名与验签实践
+### 1. RSA秘钥之签名与验签
 
 #### 1.1 RSA算法简介
 
@@ -533,9 +533,9 @@ public class ApiEncryptUtil {
 相关文章
 
 1. [Java与Go语言实现的RSA加密算法的互通](https://blog.csdn.net/igoqhb/article/details/19832259) 
-### 2. AES加密和签名和验签
+### 3. AES秘钥之签名和验签
 
-#### 2.1 基础回顾
+#### 3.1 基础回顾
 
 高级加密标准（英语：Advanced Encryption Standard，缩写：AES），是目前对称密钥加密中比较通用的一种加密方式，该加密方式加解密的密钥即为 AES 密钥。
 
