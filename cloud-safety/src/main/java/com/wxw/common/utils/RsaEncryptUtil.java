@@ -21,7 +21,7 @@ import java.util.Objects;
  * @description：OpenApi通信协议加解密工具类
  * @version: 1.0.0
  */
-public class ApiEncryptUtil {
+public class RsaEncryptUtil {
 
     // 私钥和公钥的文件位置
     public static final String PUB_KEY = "rsaKey/public.key";
@@ -58,8 +58,8 @@ public class ApiEncryptUtil {
         String value = getKey("rsaKey/public.key");
         System.out.println("public: " + value);
 
-        String privateKeyStr = getKey(ApiEncryptUtil.PRI_KEY);
-        String publicKeyStr = getKey(ApiEncryptUtil.PUB_KEY);
+        String privateKeyStr = getKey(RsaEncryptUtil.PRI_KEY);
+        String publicKeyStr = getKey(RsaEncryptUtil.PUB_KEY);
         //消息发送方
         String originData = "cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile-cicada-smile";
         System.out.println("原文：" + originData);
@@ -77,7 +77,7 @@ public class ApiEncryptUtil {
      * @throws Exception
      */
     public static void testCreateKey() throws Exception {
-        HashMap<String, String> map = ApiEncryptUtil.getTheKeys();
+        HashMap<String, String> map = RsaEncryptUtil.getTheKeys();
         String privateKeyStr = map.get("privateKey");
         String publicKeyStr = map.get("publicKey");
         System.out.println("私钥：" + privateKeyStr);
@@ -109,17 +109,17 @@ public class ApiEncryptUtil {
         String value = getKey("rsaKey/public.key");
         System.out.println("public: " + value);
 
-        String privateKeyStr = getKey(ApiEncryptUtil.PRI_KEY);
-        String publicKeyStr = getKey(ApiEncryptUtil.PUB_KEY);
+        String privateKeyStr = getKey(RsaEncryptUtil.PRI_KEY);
+        String publicKeyStr = getKey(RsaEncryptUtil.PUB_KEY);
         //消息发送方
         String originData = "cicada-smile";
         System.out.println("原文：" + originData);
-        String encryptData = ApiEncryptUtil.encrypt(ApiEncryptUtil.createPublicKey(publicKeyStr),
+        String encryptData = RsaEncryptUtil.encrypt(RsaEncryptUtil.createPublicKey(publicKeyStr),
                 originData.getBytes());
         System.out.println("加密：" + encryptData);
         //消息接收方
-        String decryptData = ApiEncryptUtil.decrypt(ApiEncryptUtil.createPrivateKey(privateKeyStr),
-                ApiEncryptUtil.parseBase64Binary(encryptData));
+        String decryptData = RsaEncryptUtil.decrypt(RsaEncryptUtil.createPrivateKey(privateKeyStr),
+                RsaEncryptUtil.parseBase64Binary(encryptData));
         System.out.println("解密：" + decryptData);
     }
 
@@ -130,8 +130,8 @@ public class ApiEncryptUtil {
      */
     public static void testSignVerify() throws Exception {
         String signData = "cicada-smile-cicada-smile";
-        String privateKeyStr = getKey(ApiEncryptUtil.PRI_KEY);
-        String publicKeyStr = getKey(ApiEncryptUtil.PUB_KEY);
+        String privateKeyStr = getKey(RsaEncryptUtil.PRI_KEY);
+        String publicKeyStr = getKey(RsaEncryptUtil.PUB_KEY);
         String signValue = sign(signData, createPrivateKey(privateKeyStr));
         boolean flag = verify(signData, createPublicKey(publicKeyStr), signValue);
         System.out.println("原文:" + signData);
@@ -171,7 +171,7 @@ public class ApiEncryptUtil {
      * @throws Exception
      */
     public static String getKey(String keyPlace) throws Exception {
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(ApiEncryptUtil.getFile(keyPlace)))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(RsaEncryptUtil.getFile(keyPlace)))) {
             String readLine = null;
             StringBuilder keyValue = new StringBuilder();
             while ((readLine = br.readLine()) != null) {
@@ -373,7 +373,7 @@ public class ApiEncryptUtil {
      * @return
      */
     public static InputStream getFile(String fileName) {
-        return ApiEncryptUtil.class.getClassLoader().getResourceAsStream(fileName);
+        return RsaEncryptUtil.class.getClassLoader().getResourceAsStream(fileName);
     }
 
     /**
@@ -382,7 +382,7 @@ public class ApiEncryptUtil {
      * @return
      */
     public static String getFilePath() {
-        return Objects.requireNonNull(ApiEncryptUtil.class.getClassLoader().getResource("")).getPath();
+        return Objects.requireNonNull(RsaEncryptUtil.class.getClassLoader().getResource("")).getPath();
     }
 
     /**
