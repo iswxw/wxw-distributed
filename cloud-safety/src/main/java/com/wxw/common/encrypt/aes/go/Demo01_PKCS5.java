@@ -1,77 +1,75 @@
 package com.wxw.common.encrypt.aes.go;
 
-import sun.misc.BASE64Encoder;
+import cn.hutool.core.codec.Base64;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 
 /**
  * @author ：weixiaowei.
  * @date ：2022/1/22
- * @description：和 GO 语言互通
+ * @description：
  * @version: 1.0.0
  */
 public class Demo01_PKCS5 {
 
-    private IvParameterSpec ivSpec;
-    private SecretKeySpec keySpec;
+    public static void main(String[] args) {
+        String signKey = "123456";
+        String aesKey = "0123456789ABCDEF";
+        String encryptBody = encrypt("weixiaowei@qoogle.com",aesKey);
 
-    public Demo01_PKCS5(String key) {
+        // 加密后 = xBtQod-SPFDn0WVgbxa1lAwoUqffgf5nB_O4e9RO3PY
+        System.out.println("加密后 = " + encryptBody);
+
+        String decryptBase64 = decrypt("xBtQod-SPFDn0WVgbxa1lAwoUqffgf5nB_O4e9RO3PY",aesKey);
+        System.out.println("解密后 = " + decryptBase64);
+    }
+
+    public static String encrypt(String origData,String key) {
         try {
-            byte[] keyBytes = key.getBytes();
-            byte[] buf = new byte[16];
+            byte[] byteBuf = getByteBuf(key);
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            SecretKeySpec keySpec = new SecretKeySpec(byteBuf, "AES");
+            IvParameterSpec ivSpec = new IvParameterSpec(key.getBytes(StandardCharsets.UTF_8));
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivSpec);
+            byte[] doFinal = cipher.doFinal(origData.getBytes(StandardCharsets.UTF_8));
+            return Base64.encodeUrlSafe(doFinal);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    // 取前16位
+    public static byte[] getByteBuf(String key) {
+        byte[] keyBytes = key.getBytes();
+        byte[] buf = new byte[16];
+        try {
             for (int i = 0; i < keyBytes.length && i < buf.length; i++) {
                 buf[i] = keyBytes[i];
             }
-            this.keySpec = new SecretKeySpec(buf, "AES");
-            this.ivSpec = new IvParameterSpec(keyBytes);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return buf;
     }
 
-    /**
-     * @param args
-     * @throws Exception
-     */
-    public static void main(String[] args) throws Exception {
+    public static String decrypt(String crypted,String key) {
 
-        // 构造方法实现
-        Demo01_PKCS5 aes = new Demo01_PKCS5("0123456789ABCDEF");
-        String data = "weixiaowei@qoogle.com";
-        byte[] crypted = aes.encrypt(data.getBytes());
-
-        // 加密后：xBtQod+SPFDn0WVgbxa1lAwoUqffgf5nB/O4e9RO3PY=
-        System.out.println("加密后：" + base64Encode(crypted));
-        System.out.println("解密后" + new String(aes.decrypt(crypted))); //weixiaowei@qoogle.com
-    }
-
-    public byte[] encrypt(byte[] origData) {
+        byte[] decode = Base64.decode(crypted);
+        byte[] byteBuf = getByteBuf(key);
         try {
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            cipher.init(Cipher.ENCRYPT_MODE, this.keySpec, this.ivSpec);
-            return cipher.doFinal(origData);
-        } catch (Exception e) {
+            SecretKeySpec keySpec = new SecretKeySpec(byteBuf, "AES");
+            IvParameterSpec ivSpec = new IvParameterSpec(key.getBytes(StandardCharsets.UTF_8));
+            cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
+            byte[] doFinal = cipher.doFinal(decode);
+            return new String(doFinal,StandardCharsets.UTF_8);
+        }  catch (Exception e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    public byte[] decrypt(byte[] crypted) {
-        try {
-            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            cipher.init(Cipher.DECRYPT_MODE, this.keySpec, this.ivSpec);
-            return cipher.doFinal(crypted);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-
-    public static String base64Encode(byte[] data) {
-        BASE64Encoder encoder = new BASE64Encoder();
-        return encoder.encode(data);
-    }
 }

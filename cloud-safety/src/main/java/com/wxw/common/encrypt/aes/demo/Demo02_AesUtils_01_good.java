@@ -26,7 +26,7 @@ public class Demo02_AesUtils_01_good {
         /**
          * 1. 使用getByteKey01 测试 已经支持 go
          */
-        String encryptBody = encrypt01("weixiaowei@qoogle.com",aesKey);
+        String encryptBody = encrypt01(content,aesKey);
 
         // 加密后 = xBtQod-SPFDn0WVgbxa1lAwoUqffgf5nB_O4e9RO3PY
         System.out.println("加密后 = " + encryptBody);
@@ -37,7 +37,7 @@ public class Demo02_AesUtils_01_good {
         /**
          * 2. 使用 getRawKey02 测试
          */
-        String encryptBody2 = encrypt02("weixiaowei@qoogle.com",aesKey);
+        String encryptBody2 = encrypt02(content,aesKey);
 
         // 加密后 = w0xFzL8zZVcpZq_KHzTmISwibcKpzwh6FseTq2KP8Xg
         System.out.println("加密后 = " + encryptBody2);

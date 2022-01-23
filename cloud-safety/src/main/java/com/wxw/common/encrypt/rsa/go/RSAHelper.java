@@ -1,4 +1,4 @@
-package com.wxw.common.go;
+package com.wxw.common.encrypt.rsa.go;
 
 import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
