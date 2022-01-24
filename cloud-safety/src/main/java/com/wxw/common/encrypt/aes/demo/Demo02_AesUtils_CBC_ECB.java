@@ -17,14 +17,23 @@ import java.security.SecureRandom;
  * @description：
  * @version: 1.0.0
  */
-public class Demo02_AesUtils_01_good {
+public class Demo02_AesUtils_CBC_ECB {
 
+    /**
+     * 加密后 = xBtQod-SPFDn0WVgbxa1lAwoUqffgf5nB_O4e9RO3PY
+     * 解密后 = weixiaowei@qoogle.com
+     * 加密后 = w0xFzL8zZVcpZq_KHzTmISwibcKpzwh6FseTq2KP8Xg
+     * 解密后 = weixiaowei@qoogle.com
+     * 加密后 = ynyb9Qr6Rrjq8ppqZr-RKyuVnxgVzemcJmx3buk6ors
+     * 解密后 = weixiaowei@qoogle.com
+     * @param args
+     */
     public static void main(String[] args) {
         String content = "weixiaowei@qoogle.com";
         String aesKey = "0123456789ABCDEF";
 
         /**
-         * 1. 使用getByteKey01 测试 已经支持 go
+         * 1. 使用getByteKey01 自定义key 测试 支持 go demo03_java_cbc_base64_iv.go
          */
         String encryptBody = encrypt01(content,aesKey);
 
@@ -38,7 +47,6 @@ public class Demo02_AesUtils_01_good {
          * 2. 使用 getRawKey02 测试
          */
         String encryptBody2 = encrypt02(content,aesKey);
-
         // 加密后 = w0xFzL8zZVcpZq_KHzTmISwibcKpzwh6FseTq2KP8Xg
         System.out.println("加密后 = " + encryptBody2);
         String decryptBase642 = decrypt02(encryptBody2,aesKey);
@@ -113,7 +121,7 @@ public class Demo02_AesUtils_01_good {
     }
 
     /**
-     * 方式二
+     * 方式二 EBC 模式 go demo02_java_ecb_base64_sha1.go
      * @param origData
      * @param key
      * @return
@@ -124,7 +132,7 @@ public class Demo02_AesUtils_01_good {
             byte[] byteBuf = getRawKey02(key);
             Cipher cipher = Cipher.getInstance("AES");
             SecretKeySpec keySpec = new SecretKeySpec(byteBuf, "AES");
-            cipher.init(Cipher.ENCRYPT_MODE, keySpec);
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec); // EBC
             byte[] doFinal = cipher.doFinal(origData.getBytes(StandardCharsets.UTF_8));
             return Base64.encodeUrlSafe(doFinal);
         } catch (Exception e) {
@@ -132,6 +140,7 @@ public class Demo02_AesUtils_01_good {
         }
         return null;
     }
+
     public static String decrypt02(String crypted,String key) {
         byte[] decode = Base64.decode(crypted);
         byte[] byteBuf = getRawKey02(key);
@@ -146,12 +155,8 @@ public class Demo02_AesUtils_01_good {
         }
         return null;
     }
-    // 生成Key
 
     /**
-     * 生成Key
-     *   - 加密后 = w0xFzL8zZVcpZq_KHzTmISwibcKpzwh6FseTq2KP8Xg
-     *   - 解密后 = null
      * @param seed
      * @return
      */
@@ -175,7 +180,8 @@ public class Demo02_AesUtils_01_good {
     }
 
     /**
-     * 方式三
+     *  加密后：ynyb9Qr6Rrjq8ppqZr-RKyuVnxgVzemcJmx3buk6ors
+     * 方式三  CBC 模式
      * @param origData
      * @param key
      * @return

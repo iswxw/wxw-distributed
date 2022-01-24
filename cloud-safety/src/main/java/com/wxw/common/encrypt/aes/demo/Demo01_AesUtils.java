@@ -9,7 +9,6 @@ import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import com.google.common.hash.Hashing;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,11 +25,11 @@ public class Demo01_AesUtils {
     private static final Logger LOGGER = LoggerFactory.getLogger(Demo01_AesUtils.class);
     private final static String CHARSET = "utf-8";
 
-
+    // 加密后 = w0xFzL8zZVcpZq_KHzTmISwibcKpzwh6FseTq2KP8Xg
     public static void main(String[] args) {
-        String signKey = "123456";
+        String content = "weixiaowei@qoogle.com";
         String aesKey = "0123456789ABCDEF";
-        String encryptBody = encryptBase64(aesKey,"weixiaowei@qoogle.com");
+        String encryptBody = encryptBase64(aesKey,content);
         // 加密后 = w0xFzL8zZVcpZq_KHzTmISwibcKpzwh6FseTq2KP8Xg
         System.out.println("加密后 = " + encryptBody);
 

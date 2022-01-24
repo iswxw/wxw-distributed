@@ -6,7 +6,6 @@ package com.wxw.common.encrypt.aes.demo;
  * @description：
  * @version: 1.0.0
  */
-public class Demo04 {
-
+public class Demo04_CBC {
 
 }

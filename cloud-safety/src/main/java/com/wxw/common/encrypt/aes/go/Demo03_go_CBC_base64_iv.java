@@ -13,21 +13,22 @@ import java.nio.charset.StandardCharsets;
  * @description：
  * @version: 1.0.0
  */
-public class Demo01_PKCS5_16_iv {
+public class Demo03_go_CBC_base64_iv {
 
+    // 加密后 = xBtQod-SPFDn0WVgbxa1lAwoUqffgf5nB_O4e9RO3PY
     public static void main(String[] args) {
-        String signKey = "123456";
+        String content = "weixiaowei@qoogle.com";
         String aesKey = "0123456789ABCDEF";
-        String encryptBody = encrypt("weixiaowei@qoogle.com",aesKey);
 
+        String encryptBody = encrypt(content, aesKey);
         // 加密后 = xBtQod-SPFDn0WVgbxa1lAwoUqffgf5nB_O4e9RO3PY
         System.out.println("加密后 = " + encryptBody);
 
-        String decryptBase64 = decrypt("xBtQod-SPFDn0WVgbxa1lAwoUqffgf5nB_O4e9RO3PY",aesKey);
+        String decryptBase64 = decrypt(encryptBody, aesKey);
         System.out.println("解密后 = " + decryptBase64);
     }
 
-    public static String encrypt(String origData,String key) {
+    public static String encrypt(String origData, String key) {
         try {
             byte[] byteBuf = getByteBuf(key);
             Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
@@ -41,6 +42,7 @@ public class Demo01_PKCS5_16_iv {
         }
         return null;
     }
+
     // 取前16位
     public static byte[] getByteBuf(String key) {
         byte[] keyBytes = key.getBytes();
@@ -55,7 +57,7 @@ public class Demo01_PKCS5_16_iv {
         return buf;
     }
 
-    public static String decrypt(String crypted,String key) {
+    public static String decrypt(String crypted, String key) {
 
         byte[] decode = Base64.decode(crypted);
         byte[] byteBuf = getByteBuf(key);
@@ -65,8 +67,8 @@ public class Demo01_PKCS5_16_iv {
             IvParameterSpec ivSpec = new IvParameterSpec(key.getBytes(StandardCharsets.UTF_8));
             cipher.init(Cipher.DECRYPT_MODE, keySpec, ivSpec);
             byte[] doFinal = cipher.doFinal(decode);
-            return new String(doFinal,StandardCharsets.UTF_8);
-        }  catch (Exception e) {
+            return new String(doFinal, StandardCharsets.UTF_8);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
