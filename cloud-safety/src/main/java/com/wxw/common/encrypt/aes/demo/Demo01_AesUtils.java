@@ -1,10 +1,10 @@
 package com.wxw.common.encrypt.aes.demo;
 
-import cn.hutool.core.codec.Base64;
+//import cn.hutool.core.codec.Base64;
 import com.google.common.base.Charsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.apache.commons.codec.binary.Base64;
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -27,7 +27,7 @@ public class Demo01_AesUtils {
 
     // 加密后 = w0xFzL8zZVcpZq_KHzTmISwibcKpzwh6FseTq2KP8Xg
     public static void main(String[] args) {
-        String content = "weixiaowei@qoogle.com";
+        String content = "maple";
         String aesKey = "0123456789ABCDEF";
         String encryptBody = encryptBase64(aesKey,content);
         // 加密后 = w0xFzL8zZVcpZq_KHzTmISwibcKpzwh6FseTq2KP8Xg
@@ -74,8 +74,9 @@ public class Demo01_AesUtils {
         try {
             byte[] rawKey = getRawKey(seed.getBytes(CHARSET));
             byte[] result = encrypt(rawKey, content.getBytes(CHARSET));
-            return Base64.encodeUrlSafe(result);
+            // return Base64.encodeUrlSafe(result);
            // return Base64.encodeBase64URLSafeString(result);
+            return Base64.encodeBase64String(result);
         } catch (Exception e) {
             LOGGER.error("AES encrypt base64 error", e);
             throw new RuntimeException(e);
@@ -113,7 +114,8 @@ public class Demo01_AesUtils {
     public static String decryptBase64(String aesKey, String encrypted) {
         try {
             byte[] rawKey = getRawKey(aesKey.getBytes(CHARSET));
-            byte[] enc = Base64.decode(encrypted);
+//            byte[] enc = Base64.decode(encrypted);
+            byte[] enc = Base64.decodeBase64(encrypted);
             byte[] result = decrypt(rawKey, enc);
             return new String(result, CHARSET);
         } catch (Exception e) {
