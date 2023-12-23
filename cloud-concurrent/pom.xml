@@ -78,7 +78,7 @@
                     <artifactId>slf4j-api</artifactId>
                 </exclusion>
             </exclusions>
-            <version>3.4.10</version>
+            <version>3.7.2</version>
         </dependency>
         <!--zk 客户端-->
         <dependency>
