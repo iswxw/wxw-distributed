@@ -16,7 +16,6 @@
         <module>cloud-delayqueue</module>
         <module>cloud-juc</module>
         <module>cloud-jvm</module>
-        <module>cloud-tracing</module>
         <module>cloud-async</module>
     </modules>
 
