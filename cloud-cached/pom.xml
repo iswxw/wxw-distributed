@@ -13,12 +13,6 @@
 
 
     <dependencies>
-        <!--配置模块-->
-        <dependency>
-            <groupId>com.wxw</groupId>
-            <artifactId>cloud-configuration</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
         <!--spring session 缓存 redis-->
         <dependency>
             <groupId>org.springframework.session</groupId>
